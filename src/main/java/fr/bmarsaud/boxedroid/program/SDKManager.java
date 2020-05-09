@@ -8,8 +8,11 @@ import fr.bmarsaud.boxedroid.entities.APILevel;
  * An abstraction of the SDKManager program from the Android SDK
  */
 public class SDKManager extends Program {
-    public SDKManager(String path) {
+    private String sdkPath;
+
+    public SDKManager(String path, String sdkPath) {
         super(path);
+        this.sdkPath = sdkPath;
     }
 
     /**
@@ -17,7 +20,7 @@ public class SDKManager extends Program {
      * @return The process of the executed command
      */
     public Process acceptLicence() throws IOException {
-        return this.execute("--licences");
+        return this.execute("--sdk_root=" + sdkPath, "--licences");
     }
 
     /**
@@ -26,6 +29,7 @@ public class SDKManager extends Program {
      * @return The process of the executed command
      */
     public Process installSystemImage(APILevel apiLevel) throws IOException {
-        return this.execute("system-images;android-" + apiLevel.getCode() + ";google_apis;x86");
+        return this.execute("--sdk_root=" + sdkPath,
+                "system-images;android-" + apiLevel.getCode() + ";google_apis;x86");
     }
 }
