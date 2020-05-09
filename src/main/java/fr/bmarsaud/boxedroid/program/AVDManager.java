@@ -49,7 +49,7 @@ public class AVDManager extends Program {
                 "--force",
                 "--name", avdName,
                 "--abi", "google_apis/x86",
-                "--packages", "system-images;android-" + apiLevel.getCode() + ";google_apis;x86",
+                "--package", "system-images;android-" + apiLevel.getCode() + ";google_apis;x86",
                 "--device", device
         );
     }
