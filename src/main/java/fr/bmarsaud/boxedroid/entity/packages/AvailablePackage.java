@@ -1,11 +1,11 @@
 package fr.bmarsaud.boxedroid.entity.packages;
 
-public class Package {
+public class AvailablePackage {
     private String path;
     private String version;
     private String description;
 
-    public Package(String path, String version, String description) {
+    public AvailablePackage(String path, String version, String description) {
         this.path = path;
         this.version = version;
         this.description = description;
