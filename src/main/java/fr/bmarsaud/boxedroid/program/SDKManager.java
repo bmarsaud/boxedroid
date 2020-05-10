@@ -57,3 +57,14 @@ public class SDKManager extends Program {
         return this.execute("--sdk_root=" + sdkPath,
                 "platform-tools");
     }
+
+    /**
+     * Run the command installing the up to date emulator
+     * @return The process of the executed command
+     * @throws IOException
+     */
+    public Process installEmulator() throws IOException {
+        return this.execute("--sdk_root=" + sdkPath,
+                "emulator");
+    }
+}
