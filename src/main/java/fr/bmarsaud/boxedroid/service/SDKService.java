@@ -11,6 +11,8 @@ import java.util.List;
 import fr.bmarsaud.boxedroid.entity.ABI;
 import fr.bmarsaud.boxedroid.entity.APILevel;
 import fr.bmarsaud.boxedroid.entity.Variant;
+import fr.bmarsaud.boxedroid.entity.exception.PackageNotAvailableException;
+import fr.bmarsaud.boxedroid.entity.exception.SDKException;
 import fr.bmarsaud.boxedroid.entity.packages.AvailablePackage;
 import fr.bmarsaud.boxedroid.entity.packages.AvailableUpdates;
 import fr.bmarsaud.boxedroid.entity.packages.InstalledPackage;
@@ -60,8 +62,9 @@ public class SDKService {
      * @param apiLevel The API level of the dependencies to install
      * @param abi The ABI of the dependencies to install
      * @param variant The variant of the dependencies to install
+     * @throws SDKException
      */
-    public void install(APILevel apiLevel, ABI abi, Variant variant) {
+    public void install(APILevel apiLevel, ABI abi, Variant variant) throws SDKException {
         loadPackages();
         try {
             installTools();
@@ -74,8 +77,9 @@ public class SDKService {
     /**
      * Install all needed dependencies for a certain API level, x86 ABI and default variant
      * @param apiLevel The API level of the dependencies to install
+     * @throws SDKException
      */
-    public void install(APILevel apiLevel) {
+    public void install(APILevel apiLevel) throws SDKException {
         install(apiLevel, ABI.X86, Variant.DEFAULT);
     }
 
@@ -86,25 +90,34 @@ public class SDKService {
      * @param variant The variant of the dependencies to install
      * @throws IOException
      * @throws InterruptedException
+     * @throws SDKException
      */
-    private void installSDK(APILevel apiLevel, ABI abi, Variant variant) throws IOException, InterruptedException {
+    private void installSDK(APILevel apiLevel, ABI abi, Variant variant) throws IOException, InterruptedException, SDKException {
         String systemImagePackage = SDKService.getSystemImagePackageName(apiLevel, abi, variant);
         String platformsPackage = SDKService.getPlatformsPackageName(apiLevel);
 
         Process process;
 
         if(!isPackagedInstalled(systemImagePackage)) {
-            logger.info("Installing package '" + systemImagePackage + "'...");
-            process = sdkManager.installSystemImage(apiLevel, abi, variant);
-            process.waitFor();
+            if(isPackagedAvailable(systemImagePackage)) {
+                logger.info("Installing package '" + systemImagePackage + "'...");
+                process = sdkManager.installSystemImage(apiLevel, abi, variant);
+                process.waitFor();
+            } else {
+                throw new PackageNotAvailableException(systemImagePackage);
+            }
         } else {
             logger.info("Package '" + systemImagePackage + "' is already installed. Skipping...");
         }
 
         if(!isPackagedInstalled(platformsPackage)) {
-            logger.info("Installing package '" + platformsPackage + "'...");
-            process = sdkManager.installPlatforms(apiLevel);
-            process.waitFor();
+            if(isPackagedAvailable(systemImagePackage)) {
+                logger.info("Installing package '" + platformsPackage + "'...");
+                process = sdkManager.installPlatforms(apiLevel);
+                process.waitFor();
+            } else {
+                throw new PackageNotAvailableException(systemImagePackage);
+            }
         } else {
             logger.info("Package '" + platformsPackage + "' is already installed. Skipping...");
         }
@@ -160,6 +173,21 @@ public class SDKService {
     private boolean isPackagedInstalled(String packagePath) {
         for(InstalledPackage installedPackage : installedPackages) {
             if(installedPackage.getPath().equalsIgnoreCase(packagePath)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Return if a package is available or not
+     * @param packagePath The package path to check
+     * @return True if the packaged is available, False instead
+     */
+    private boolean isPackagedAvailable(String packagePath) {
+        for(AvailablePackage availablePackage : availablePackages) {
+            if(availablePackage.getPath().equalsIgnoreCase(packagePath)) {
                 return true;
             }
         }
