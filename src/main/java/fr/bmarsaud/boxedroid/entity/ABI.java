@@ -1,4 +1,4 @@
-package fr.bmarsaud.boxedroid.entities;
+package fr.bmarsaud.boxedroid.entity;
 
 public enum ABI {
     X86("x86"),

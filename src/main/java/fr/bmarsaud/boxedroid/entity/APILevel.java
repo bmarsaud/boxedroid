@@ -1,4 +1,4 @@
-package fr.bmarsaud.boxedroid.entities;
+package fr.bmarsaud.boxedroid.entity;
 
 public enum APILevel {
     API_21(21, AndroidVersion.ANDROID_5),

@@ -3,9 +3,9 @@ package fr.bmarsaud.boxedroid.program;
 import java.io.File;
 import java.io.IOException;
 
-import fr.bmarsaud.boxedroid.entities.ABI;
-import fr.bmarsaud.boxedroid.entities.APILevel;
-import fr.bmarsaud.boxedroid.entities.Platform;
+import fr.bmarsaud.boxedroid.entity.ABI;
+import fr.bmarsaud.boxedroid.entity.APILevel;
+import fr.bmarsaud.boxedroid.entity.Platform;
 
 /**
  * An abstraction of the AVDManager program form the Android SDK.
