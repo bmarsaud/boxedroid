@@ -1,5 +1,6 @@
 package fr.bmarsaud.boxedroid.program;
 
+import java.io.File;
 import java.io.IOException;
 
 import fr.bmarsaud.boxedroid.entities.ABI;
@@ -42,17 +43,21 @@ public class AVDManager extends Program {
      * Execute the "create avd" command with an AVD name, an API level and a device
      * @param avdName The name to give to the new AVD
      * @param apiLevel The Android API level of the new AVD
+     * @param abi The ABI of the new AVD
+     * @param platform The platform of the new AVD
      * @param device The device of the new AVD
+     * @param path The path where to store the new AVD
      * @return The process of the executed command
      */
-    public Process createAVD(String avdName, APILevel apiLevel, ABI abi, Platform platform, String device) throws IOException {
+    public Process createAVD(String avdName, APILevel apiLevel, ABI abi, Platform platform, String device, String path) throws IOException {
         return this.execute(
                 "create", "avd",
                 "--force",
                 "--name", avdName,
                 "--abi", platform.getId() + "/" + abi.getId(),
                 "--package", "system-images;android-" + apiLevel.getCode() + ";" + platform.getId() + ";" + abi.getId(),
-                "--device", device
+                "--device", device,
+                "--path", new File(path, avdName).getAbsolutePath()
         );
     }
 }
