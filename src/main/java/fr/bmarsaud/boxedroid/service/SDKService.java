@@ -1,5 +1,8 @@
 package fr.bmarsaud.boxedroid.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -15,6 +18,8 @@ import fr.bmarsaud.boxedroid.program.SDKManager;
 import fr.bmarsaud.boxedroid.util.PackagesListParser;
 
 public class SDKService {
+    private Logger logger = LoggerFactory.getLogger(SDKService.class);
+
     private List<AvailablePackage> availablePackages;
     private List<InstalledPackage> installedPackages;
     private List<AvailableUpdates> availableUpdates;
@@ -89,13 +94,19 @@ public class SDKService {
         Process process;
 
         if(!isPackagedInstalled(systemImagePackage)) {
+            logger.info("Installing package '" + systemImagePackage + "'...");
             process = sdkManager.installSystemImage(apiLevel, abi, variant);
             process.waitFor();
+        } else {
+            logger.info("Package '" + systemImagePackage + "' is already installed. Skipping...");
         }
 
         if(!isPackagedInstalled(platformsPackage)) {
+            logger.info("Installing package '" + platformsPackage + "'...");
             process = sdkManager.installPlatforms(apiLevel);
             process.waitFor();
+        } else {
+            logger.info("Package '" + platformsPackage + "' is already installed. Skipping...");
         }
     }
 
@@ -108,13 +119,19 @@ public class SDKService {
         Process process;
 
         if(!isPackagedInstalled("platform-tools")) {
+            logger.info("Installing package 'platform-tools'...");
             process = sdkManager.installPlatformsTools();
             process.waitFor();
+        } else {
+            logger.info("Package 'platform-tools' already installed. Skipping...");
         }
 
         if(!isPackagedInstalled("emulator")) {
+            logger.info("Installing package 'emulator'...");
             process = sdkManager.installEmulator();
             process.waitFor();
+        } else {
+            logger.info("Package 'emulator' already installed. Skipping...");
         }
     }
 
