@@ -2,7 +2,9 @@ package fr.bmarsaud.boxedroid.program;
 
 import java.io.IOException;
 
+import fr.bmarsaud.boxedroid.entities.ABI;
 import fr.bmarsaud.boxedroid.entities.APILevel;
+import fr.bmarsaud.boxedroid.entities.Platform;
 
 /**
  * An abstraction of the AVDManager program form the Android SDK.
@@ -43,13 +45,13 @@ public class AVDManager extends Program {
      * @param device The device of the new AVD
      * @return The process of the executed command
      */
-    public Process createAVD(String avdName, APILevel apiLevel, String device) throws IOException {
+    public Process createAVD(String avdName, APILevel apiLevel, ABI abi, Platform platform, String device) throws IOException {
         return this.execute(
                 "create", "avd",
                 "--force",
                 "--name", avdName,
-                "--abi", "google_apis/x86",
-                "--package", "system-images;android-" + apiLevel.getCode() + ";google_apis;x86",
+                "--abi", platform.getId() + "/" + abi.getId(),
+                "--package", "system-images;android-" + apiLevel.getCode() + ";" + platform.getId() + ";" + abi.getId(),
                 "--device", device
         );
     }
