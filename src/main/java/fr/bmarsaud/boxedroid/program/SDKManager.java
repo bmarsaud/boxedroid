@@ -5,6 +5,7 @@ import java.io.IOException;
 import fr.bmarsaud.boxedroid.entity.ABI;
 import fr.bmarsaud.boxedroid.entity.APILevel;
 import fr.bmarsaud.boxedroid.entity.Variant;
+import fr.bmarsaud.boxedroid.service.SDKService;
 
 /**
  * An abstraction of the SDKManager program from the Android SDK
@@ -34,7 +35,7 @@ public class SDKManager extends Program {
      */
     public Process installSystemImage(APILevel apiLevel, ABI abi, Variant variant) throws IOException {
         return this.execute("--sdk_root=" + sdkPath,
-                "system-images;android-" + apiLevel.getCode() + ";" + variant.getId() +";" + abi.getId());
+                SDKService.getSystemImagePackageName(apiLevel, abi, variant));
     }
 
     /**
@@ -45,7 +46,7 @@ public class SDKManager extends Program {
      */
     public Process installPlatforms(APILevel apiLevel) throws IOException {
         return this.execute("--sdk_root=" + sdkPath,
-                "platforms;android-" + apiLevel.getCode());
+                SDKService.getPlatformsPackageName(apiLevel));
     }
 
     /**

@@ -92,7 +92,7 @@ public class SDKService {
             process = sdkManager.installSystemImage(apiLevel, abi, variant);
             process.waitFor();
         }
-        
+
         if(!isPackagedInstalled(platformsPackage)) {
             process = sdkManager.installPlatforms(apiLevel);
             process.waitFor();
