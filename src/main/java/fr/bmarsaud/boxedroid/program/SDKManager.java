@@ -47,3 +47,13 @@ public class SDKManager extends Program {
         return this.execute("--sdk_root=" + sdkPath,
                 "platforms;android-" + apiLevel.getCode());
     }
+
+    /**
+     * Run the command installing the up to date platform-tools
+     * @return The process of the executed command
+     * @throws IOException
+     */
+    public Process installPlatformsTools() throws IOException {
+        return this.execute("--sdk_root=" + sdkPath,
+                "platform-tools");
+    }
