@@ -36,4 +36,14 @@ public class SDKManager extends Program {
         return this.execute("--sdk_root=" + sdkPath,
                 "system-images;android-" + apiLevel.getCode() + ";" + variant.getId() +";" + abi.getId());
     }
-}
+
+    /**
+     * Run the command installing the platforms of a certain API level
+     * @param apiLevel The API level of the platforms to install
+     * @return The process of the executed command
+     * @throws IOException
+     */
+    public Process installPlatforms(APILevel apiLevel) throws IOException {
+        return this.execute("--sdk_root=" + sdkPath,
+                "platforms;android-" + apiLevel.getCode());
+    }
