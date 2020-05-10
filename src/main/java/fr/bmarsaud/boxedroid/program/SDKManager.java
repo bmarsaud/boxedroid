@@ -5,6 +5,7 @@ import java.io.IOException;
 import fr.bmarsaud.boxedroid.entity.ABI;
 import fr.bmarsaud.boxedroid.entity.APILevel;
 import fr.bmarsaud.boxedroid.entity.Variant;
+import fr.bmarsaud.boxedroid.service.SDKService;
 
 /**
  * An abstraction of the SDKManager program from the Android SDK
@@ -34,6 +35,47 @@ public class SDKManager extends Program {
      */
     public Process installSystemImage(APILevel apiLevel, ABI abi, Variant variant) throws IOException {
         return this.execute("--sdk_root=" + sdkPath,
-                "system-images;android-" + apiLevel.getCode() + ";" + variant.getId() +";" + abi.getId());
+                SDKService.getSystemImagePackageName(apiLevel, abi, variant));
+    }
+
+    /**
+     * Run the command installing the platforms of a certain API level
+     * @param apiLevel The API level of the platforms to install
+     * @return The process of the executed command
+     * @throws IOException
+     */
+    public Process installPlatforms(APILevel apiLevel) throws IOException {
+        return this.execute("--sdk_root=" + sdkPath,
+                SDKService.getPlatformsPackageName(apiLevel));
+    }
+
+    /**
+     * Run the command installing the up to date platform-tools
+     * @return The process of the executed command
+     * @throws IOException
+     */
+    public Process installPlatformsTools() throws IOException {
+        return this.execute("--sdk_root=" + sdkPath,
+                "platform-tools");
+    }
+
+    /**
+     * Run the command installing the up to date emulator
+     * @return The process of the executed command
+     * @throws IOException
+     */
+    public Process installEmulator() throws IOException {
+        return this.execute("--sdk_root=" + sdkPath,
+                "emulator");
+    }
+
+    /**
+     * Run the command listing all installed and available packages
+     * @return The process of the executed command
+     * @throws IOException
+     */
+    public Process list() throws IOException {
+        return this.execute("--sdk_root=" + sdkPath,
+                "--list");
     }
 }

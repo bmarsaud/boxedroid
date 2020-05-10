@@ -36,7 +36,7 @@ public class Program {
         ProcessBuilder pb = new ProcessBuilder(command);
         pb.environment().putAll(environment);
 
-        return pb.inheritIO().start();
+        return pb.start();
     }
 
     public String getPath() {
