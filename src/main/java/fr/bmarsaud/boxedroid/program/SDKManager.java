@@ -67,4 +67,14 @@ public class SDKManager extends Program {
         return this.execute("--sdk_root=" + sdkPath,
                 "emulator");
     }
+
+    /**
+     * Run the command listing all installed and available packages
+     * @return The process of the executed command
+     * @throws IOException
+     */
+    public Process list() throws IOException {
+        return this.execute("--sdk_root=" + sdkPath,
+                "--list");
+    }
 }
