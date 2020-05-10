@@ -5,7 +5,7 @@ import java.io.IOException;
 
 import fr.bmarsaud.boxedroid.entity.ABI;
 import fr.bmarsaud.boxedroid.entity.APILevel;
-import fr.bmarsaud.boxedroid.entity.Platform;
+import fr.bmarsaud.boxedroid.entity.Variant;
 
 /**
  * An abstraction of the AVDManager program form the Android SDK.
@@ -44,18 +44,18 @@ public class AVDManager extends Program {
      * @param avdName The name to give to the new AVD
      * @param apiLevel The Android API level of the new AVD
      * @param abi The ABI of the new AVD
-     * @param platform The platform of the new AVD
+     * @param variant The variant of the new AVD
      * @param device The device of the new AVD
      * @param path The path where to store the new AVD
      * @return The process of the executed command
      */
-    public Process createAVD(String avdName, APILevel apiLevel, ABI abi, Platform platform, String device, String path) throws IOException {
+    public Process createAVD(String avdName, APILevel apiLevel, ABI abi, Variant variant, String device, String path) throws IOException {
         return this.execute(
                 "create", "avd",
                 "--force",
                 "--name", avdName,
-                "--abi", platform.getId() + "/" + abi.getId(),
-                "--package", "system-images;android-" + apiLevel.getCode() + ";" + platform.getId() + ";" + abi.getId(),
+                "--abi", variant.getId() + "/" + abi.getId(),
+                "--package", "system-images;android-" + apiLevel.getCode() + ";" + variant.getId() + ";" + abi.getId(),
                 "--device", device,
                 "--path", new File(path, avdName).getAbsolutePath()
         );

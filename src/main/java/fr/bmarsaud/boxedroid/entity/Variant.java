@@ -1,6 +1,6 @@
 package fr.bmarsaud.boxedroid.entity;
 
-public enum Platform {
+public enum Variant {
     DEFAULT("default"),
     GOOGLE_APIS("google_apis"),
     GOOGLE_APIS_PLAYSTORE("google_apis_playstore"),
@@ -10,7 +10,7 @@ public enum Platform {
 
     private String id;
 
-    Platform(String id) {
+    Variant(String id) {
         this.id = id;
     }
 

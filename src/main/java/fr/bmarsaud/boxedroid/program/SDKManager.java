@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import fr.bmarsaud.boxedroid.entity.ABI;
 import fr.bmarsaud.boxedroid.entity.APILevel;
-import fr.bmarsaud.boxedroid.entity.Platform;
+import fr.bmarsaud.boxedroid.entity.Variant;
 
 /**
  * An abstraction of the SDKManager program from the Android SDK
@@ -26,14 +26,14 @@ public class SDKManager extends Program {
     }
 
     /**
-     * Run the command installing the system images of a certain API level, ABI and platform
+     * Run the command installing the system images of a certain API level, ABI and variant
      * @param apiLevel The API level of the system images to install
      * @param abi The ABI supported by the system images to install
-     * @param platform The platform of the system images to install
+     * @param variant The variant of the system images to install
      * @return The process of the executed command
      */
-    public Process installSystemImage(APILevel apiLevel, ABI abi, Platform platform) throws IOException {
+    public Process installSystemImage(APILevel apiLevel, ABI abi, Variant variant) throws IOException {
         return this.execute("--sdk_root=" + sdkPath,
-                "system-images;android-" + apiLevel.getCode() + ";" + platform.getId() +";" + abi.getId());
+                "system-images;android-" + apiLevel.getCode() + ";" + variant.getId() +";" + abi.getId());
     }
 }
