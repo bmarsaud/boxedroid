@@ -1,6 +1,6 @@
 package fr.bmarsaud.boxedroid.entity.packages;
 
-public class InstalledPackage extends Package {
+public class InstalledPackage extends AvailablePackage {
     private String location;
 
     public InstalledPackage(String path, String version, String description, String location) {
