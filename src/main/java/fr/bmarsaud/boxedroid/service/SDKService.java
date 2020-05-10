@@ -2,18 +2,52 @@ package fr.bmarsaud.boxedroid.service;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import fr.bmarsaud.boxedroid.entity.ABI;
 import fr.bmarsaud.boxedroid.entity.APILevel;
 import fr.bmarsaud.boxedroid.entity.Variant;
+import fr.bmarsaud.boxedroid.entity.packages.AvailablePackage;
+import fr.bmarsaud.boxedroid.entity.packages.AvailableUpdates;
+import fr.bmarsaud.boxedroid.entity.packages.InstalledPackage;
 import fr.bmarsaud.boxedroid.program.SDKManager;
+import fr.bmarsaud.boxedroid.util.PackagesListParser;
 
 public class SDKService {
+    private List<AvailablePackage> availablePackages;
+    private List<InstalledPackage> installedPackages;
+    private List<AvailableUpdates> availableUpdates;
+
     private static final String SDK_MANAGER_PATH = "tools/bin/sdkmanager";
+
     private SDKManager sdkManager;
 
     public SDKService(String sdkPath) {
         this.sdkManager = new SDKManager(new File(sdkPath, SDK_MANAGER_PATH).getAbsolutePath(), sdkPath);
+        this.availablePackages = new ArrayList<>();
+        this.installedPackages = new ArrayList<>();
+        this.availableUpdates = new ArrayList<>();
+    }
+
+    /**
+     * Return the system-images package name for a certain API level, ABI and variant
+     * @param apiLevel The API level
+     * @param abi The API
+     * @param variant The variant
+     * @return The package name
+     */
+    public static String getSystemImagePackageName(APILevel apiLevel, ABI abi, Variant variant) {
+        return "system-images;android-" + apiLevel.getCode() + ";" + variant.getId() +";" + abi.getId();
+    }
+
+    /**
+     * Return the platforms package name for a certain API level, ABI and variant
+     * @param apiLevel The API level
+     * @return The package name
+     */
+    public static String getPlatformsPackageName(APILevel apiLevel) {
+        return "platforms;android-" + apiLevel.getCode();
     }
 
     /**
@@ -23,6 +57,7 @@ public class SDKService {
      * @param variant The variant of the dependencies to install
      */
     public void install(APILevel apiLevel, ABI abi, Variant variant) {
+        loadPackages();
         try {
             installTools();
             installSDK(apiLevel, abi, variant);
@@ -48,11 +83,20 @@ public class SDKService {
      * @throws InterruptedException
      */
     private void installSDK(APILevel apiLevel, ABI abi, Variant variant) throws IOException, InterruptedException {
-        Process process = sdkManager.installSystemImage(apiLevel, abi, variant);
-        process.waitFor();
+        String systemImagePackage = SDKService.getSystemImagePackageName(apiLevel, abi, variant);
+        String platformsPackage = SDKService.getPlatformsPackageName(apiLevel);
 
-        process = sdkManager.installPlatforms(apiLevel);
-        process.waitFor();
+        Process process;
+
+        if(!isPackagedInstalled(systemImagePackage)) {
+            process = sdkManager.installSystemImage(apiLevel, abi, variant);
+            process.waitFor();
+        }
+        
+        if(!isPackagedInstalled(platformsPackage)) {
+            process = sdkManager.installPlatforms(apiLevel);
+            process.waitFor();
+        }
     }
 
     /**
@@ -61,10 +105,48 @@ public class SDKService {
      * @throws InterruptedException
      */
     private void installTools() throws IOException, InterruptedException {
-        Process process = sdkManager.installPlatformsTools();
-        process.waitFor();
+        Process process;
 
-        process = sdkManager.installEmulator();
-        process.waitFor();
+        if(!isPackagedInstalled("platform-tools")) {
+            process = sdkManager.installPlatformsTools();
+            process.waitFor();
+        }
+
+        if(!isPackagedInstalled("emulator")) {
+            process = sdkManager.installEmulator();
+            process.waitFor();
+        }
+    }
+
+    /**
+     * Load packages lists
+     */
+    private void loadPackages() {
+        try {
+            PackagesListParser listParser = new PackagesListParser();
+            Process process = sdkManager.list();
+            listParser.parse(process);
+
+            availablePackages = listParser.getAvailableAvailablePackages();
+            installedPackages = listParser.getInstalledPackages();
+            availableUpdates = listParser.getAvailableUpdates();
+        } catch(IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Return if a package is already installed or not
+     * @param packagePath The package path to check
+     * @return True if the packaged is installed, False instead
+     */
+    private boolean isPackagedInstalled(String packagePath) {
+        for(InstalledPackage installedPackage : installedPackages) {
+            if(installedPackage.getPath().equalsIgnoreCase(packagePath)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
