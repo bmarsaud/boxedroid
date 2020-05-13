@@ -154,13 +154,18 @@ public class SDKService {
     private void loadPackages() {
         try {
             PackagesListParser listParser = new PackagesListParser();
+
+            sdkManager.onInfo(listParser);
+
             Process process = sdkManager.list();
             listParser.parse(process);
+
+            sdkManager.unInfo(listParser);
 
             availablePackages = listParser.getAvailableAvailablePackages();
             installedPackages = listParser.getInstalledPackages();
             availableUpdates = listParser.getAvailableUpdates();
-        } catch(IOException e) {
+        } catch(IOException | InterruptedException e) {
             e.printStackTrace();
         }
     }
