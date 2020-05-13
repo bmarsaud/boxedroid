@@ -155,4 +155,13 @@ public class Program extends Observable {
             }
         }).start();
     }
+
+    /**
+     * Send an input string to the current process output stream
+     * @param input The string to send to the process
+     * @throws IOException
+     */
+    private void sendInput(String input) throws IOException {
+        process.getOutputStream().write(input.getBytes(StandardCharsets.UTF_8));
+    }
 }
