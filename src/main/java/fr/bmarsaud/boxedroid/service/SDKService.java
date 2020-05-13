@@ -154,13 +154,12 @@ public class SDKService {
     private void loadPackages() {
         try {
             PackagesListParser listParser = new PackagesListParser();
-
-            sdkManager.onInfo(listParser);
+            sdkManager.onInfo(listParser.getObserver());
 
             Process process = sdkManager.list();
             listParser.parse(process);
 
-            sdkManager.unInfo(listParser);
+            sdkManager.unInfo(listParser.getObserver());
 
             availablePackages = listParser.getAvailableAvailablePackages();
             installedPackages = listParser.getInstalledPackages();

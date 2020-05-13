@@ -13,7 +13,7 @@ import fr.bmarsaud.boxedroid.entity.packages.AvailablePackage;
  * Parse the output of the SDK Manager list command to three {@link List} containing
  * the installed, available and updatable packages
  */
-public class PackagesListParser implements Observer {
+public class PackagesListParser {
     private static final String HEADER_SEPARATOR = "-------";
     private static final String[] HEADER_SYMBOL = {"Path", "ID"};
     private static final String COLUMN_SEPARATOR = " | ";
@@ -24,6 +24,8 @@ public class PackagesListParser implements Observer {
     private List<AvailableUpdates> availableUpdates;
 
     private List<String> programOutput;
+
+    private Observer observer;
 
     private enum PackageStatus {
         INSTALLED("Installed packages:"),
@@ -46,15 +48,10 @@ public class PackagesListParser implements Observer {
         this.installedPackages = new ArrayList<>();
         this.availableUpdates = new ArrayList<>();
         this.programOutput = new ArrayList<>();
-    }
-
-    /**
-     * Aggregate the program output to the {@link this.programOutput} list
-     */
-    @Override
-    public void update(Observable program, Object obj) {
-        String line = (String) obj;
-        programOutput.add(line);
+        this.observer = (program, obj) -> { // JS style <3
+            String line = (String) obj;
+            programOutput.add(line);
+        };
     }
 
     /**
@@ -136,5 +133,14 @@ public class PackagesListParser implements Observer {
      */
     public List<AvailableUpdates> getAvailableUpdates() {
         return availableUpdates;
+    }
+
+    /**
+     * Returns the observer aggregating the program output
+     * @return
+     */
+    public Observer getObserver() {
+        programOutput.clear();
+        return observer;
     }
 }
