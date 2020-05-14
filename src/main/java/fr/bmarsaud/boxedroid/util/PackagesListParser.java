@@ -2,6 +2,8 @@ package fr.bmarsaud.boxedroid.util;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
 
 import fr.bmarsaud.boxedroid.entity.packages.AvailableUpdates;
 import fr.bmarsaud.boxedroid.entity.packages.InstalledPackage;
@@ -20,6 +22,10 @@ public class PackagesListParser {
     private List<AvailablePackage> availableAvailablePackages;
     private List<InstalledPackage> installedPackages;
     private List<AvailableUpdates> availableUpdates;
+
+    private List<String> programOutput;
+
+    private Observer observer;
 
     private enum PackageStatus {
         INSTALLED("Installed packages:"),
@@ -41,6 +47,11 @@ public class PackagesListParser {
         this.availableAvailablePackages = new ArrayList<>();
         this.installedPackages = new ArrayList<>();
         this.availableUpdates = new ArrayList<>();
+        this.programOutput = new ArrayList<>();
+        this.observer = (program, obj) -> { // JS style <3
+            String line = (String) obj;
+            programOutput.add(line);
+        };
     }
 
     /**
@@ -50,17 +61,16 @@ public class PackagesListParser {
      * {@link PackagesListParser#getInstalledPackages()} and {@link PackagesListParser#getAvailableUpdates()}
      * @param process The SDK Manager list command process
      */
-    public void parse(Process process) {
+    public void parse(Process process) throws InterruptedException {
+        process.waitFor(); // Wait for process to end before processing output
+
         availableUpdates.clear();
         installedPackages.clear();
         availableUpdates.clear();
 
-        String output = IOUtils.streamToString(process.getInputStream());
-
         PackageStatus status = null;
-        String[] lines = output.split("\n");
 
-        for(String line : lines) {
+        for(String line : programOutput) {
             // Identifies the next packages status
             for(PackageStatus stat : PackageStatus.values()) {
                 if(line.equalsIgnoreCase(stat.getText())) {
@@ -123,5 +133,14 @@ public class PackagesListParser {
      */
     public List<AvailableUpdates> getAvailableUpdates() {
         return availableUpdates;
+    }
+
+    /**
+     * Returns the observer aggregating the program output
+     * @return
+     */
+    public Observer getObserver() {
+        programOutput.clear();
+        return observer;
     }
 }
