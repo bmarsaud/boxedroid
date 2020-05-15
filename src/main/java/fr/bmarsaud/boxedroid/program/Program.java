@@ -15,6 +15,8 @@ import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
 
+import fr.bmarsaud.boxedroid.entity.exception.SDKException;
+
 /**
  * A abstraction of an external executable program
  */
@@ -22,6 +24,7 @@ public class Program extends Observable {
     private String path;
     private Map<String, String> environment;
     private Process process;
+    private SDKException exception;
 
     private ArrayList<Observer> infoObservers;
     private ArrayList<Observer> errorObservers;
@@ -74,6 +77,14 @@ public class Program extends Observable {
 
     public void setEnvironment(Map<String, String> environment) {
         this.environment = environment;
+    }
+
+    public SDKException getException() {
+        return exception;
+    }
+
+    public void setException(SDKException exception) {
+        this.exception = exception;
     }
 
     /**
