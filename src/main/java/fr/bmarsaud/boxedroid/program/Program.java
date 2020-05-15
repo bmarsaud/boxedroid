@@ -1,9 +1,11 @@
 package fr.bmarsaud.boxedroid.program;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -161,7 +163,10 @@ public class Program extends Observable {
      * @param input The string to send to the process
      * @throws IOException
      */
-    private void sendInput(String input) throws IOException {
-        process.getOutputStream().write(input.getBytes(StandardCharsets.UTF_8));
+    public void sendInput(String input) throws IOException {
+        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(process.getOutputStream(), StandardCharsets.UTF_8));
+        writer.write(input, 0, input.length());
+        writer.newLine();
+        writer.close();
     }
 }
