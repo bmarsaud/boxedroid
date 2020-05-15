@@ -17,6 +17,7 @@ import fr.bmarsaud.boxedroid.entity.packages.AvailablePackage;
 import fr.bmarsaud.boxedroid.entity.packages.AvailableUpdates;
 import fr.bmarsaud.boxedroid.entity.packages.InstalledPackage;
 import fr.bmarsaud.boxedroid.program.SDKManager;
+import fr.bmarsaud.boxedroid.program.observers.LicenceObserver;
 import fr.bmarsaud.boxedroid.util.PackagesListParser;
 
 public class SDKService {
@@ -97,6 +98,9 @@ public class SDKService {
         String platformsPackage = SDKService.getPlatformsPackageName(apiLevel);
 
         Process process;
+        LicenceObserver licenceObserver = new LicenceObserver();
+
+        sdkManager.onInfo(licenceObserver);
 
         if(!isPackagedInstalled(systemImagePackage)) {
             if(isPackagedAvailable(systemImagePackage)) {
@@ -121,6 +125,8 @@ public class SDKService {
         } else {
             logger.info("Package '" + platformsPackage + "' is already installed. Skipping...");
         }
+
+        sdkManager.unInfo(licenceObserver);
     }
 
     /**
@@ -128,13 +134,21 @@ public class SDKService {
      * @throws IOException
      * @throws InterruptedException
      */
-    private void installTools() throws IOException, InterruptedException {
+    private void installTools() throws SDKException, IOException, InterruptedException {
         Process process;
+        LicenceObserver licenceObserver = new LicenceObserver();
+
+        sdkManager.onInfo(licenceObserver);
 
         if(!isPackagedInstalled("platform-tools")) {
             logger.info("Installing package 'platform-tools'...");
             process = sdkManager.installPlatformsTools();
             process.waitFor();
+
+            SDKException exception = sdkManager.getException();
+            if(exception != null) {
+                throw  exception;
+            }
         } else {
             logger.info("Package 'platform-tools' already installed. Skipping...");
         }
@@ -146,6 +160,8 @@ public class SDKService {
         } else {
             logger.info("Package 'emulator' already installed. Skipping...");
         }
+
+        sdkManager.unInfo(licenceObserver);
     }
 
     /**
