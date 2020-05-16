@@ -46,7 +46,7 @@ public class AVDService {
      * @param device The device name of the AVD
      * @throws SDKException
      */
-    public void create(String avdName, APILevel apiLevel, ABI abi, Variant variant, String device) throws SDKException, IOException, InterruptedException {
+    public void create(String avdName, APILevel apiLevel, ABI abi, Variant variant, String device) throws SDKException {
         loadDevices();
         loadAVDs();
 
@@ -58,8 +58,12 @@ public class AVDService {
             throw new AVDNameUsedException(avdName);
         }
 
-        Process process = avdManager.createAVD(avdName, apiLevel, abi,variant,device, avdsPath);
-        process.waitFor();
+        try {
+            Process process = avdManager.createAVD(avdName, apiLevel, abi,variant,device, avdsPath);
+            process.waitFor();
+        } catch(IOException |InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
