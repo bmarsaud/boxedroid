@@ -1,9 +1,15 @@
 package fr.bmarsaud.boxedroid.util;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class IOUtils {
     /**
@@ -46,5 +52,21 @@ public class IOUtils {
         }
 
         return str;
+    }
+
+    /**
+     * Get all files in a directory
+     * @param path The directory to returns the files
+     * @return The list of files found
+     */
+    public static List<String> getFilesInDir(String path) {
+        List<String> files = new ArrayList<>();
+        try {
+            files = Files.walk(Paths.get(path)).map(x -> x.toString()).collect(Collectors.toList());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return files;
     }
 }
