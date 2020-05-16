@@ -17,4 +17,19 @@ public enum Variant {
     public String getId() {
         return id;
     }
+
+    /**
+     * Get a Variant from its id
+     * @param id The Variant id
+     * @return The Variant if found, null instead
+     */
+    public static Variant fromId(String id) {
+        for(Variant variant : Variant.values()) {
+            if(variant.getId().equals(id)) {
+                return variant;
+            }
+        }
+
+        return null;
+    }
 }

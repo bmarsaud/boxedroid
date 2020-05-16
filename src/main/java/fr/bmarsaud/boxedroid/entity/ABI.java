@@ -1,5 +1,7 @@
 package fr.bmarsaud.boxedroid.entity;
 
+import java.util.Arrays;
+
 public enum ABI {
     X86("x86"),
     X86_64("x86_64"),
@@ -14,5 +16,20 @@ public enum ABI {
 
     public String getId() {
         return id;
+    }
+
+    /**
+     * Get an ABI from its id
+     * @param id The ABI id
+     * @return The ABI if found, null instead
+     */
+    public static ABI fromId(String id) {
+        for(ABI abi : ABI.values()) {
+            if(abi.getId().equals(id)) {
+                return abi;
+            }
+        }
+
+        return null;
     }
 }

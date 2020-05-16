@@ -11,6 +11,8 @@ public enum APILevel {
     API_28(28, AndroidVersion.ANDROID_9),
     API_29(29, AndroidVersion.ANDROID_10);
 
+    private static final String NAME_PREFIX = "android-";
+
     private int code;
     private AndroidVersion androidVersion;
 
@@ -25,5 +27,21 @@ public enum APILevel {
 
     public AndroidVersion getAndroidVersion() {
         return androidVersion;
+    }
+
+    /**
+     * Get an API level from its name
+     * @param name The name of that API level
+     * @return The API level if found, null instead
+     */
+    public static APILevel fromName(String name) {
+        int code = Integer.parseInt(name.replace(NAME_PREFIX, ""));
+        for(APILevel level : APILevel.values()) {
+            if(level.code == code) {
+                return level;
+            }
+        }
+
+        return null;
     }
 }
