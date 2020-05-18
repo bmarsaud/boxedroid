@@ -7,7 +7,7 @@ import java.util.Observer;
 import fr.bmarsaud.boxedroid.entity.packages.AvailableUpdates;
 import fr.bmarsaud.boxedroid.entity.packages.InstalledPackage;
 import fr.bmarsaud.boxedroid.entity.packages.AvailablePackage;
-import fr.bmarsaud.boxedroid.program.observers.AggregateObserver;
+import fr.bmarsaud.boxedroid.program.observer.AggregateObserver;
 import fr.bmarsaud.boxedroid.util.IOUtils;
 
 /**

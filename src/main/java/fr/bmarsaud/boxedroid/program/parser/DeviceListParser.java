@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Observer;
 
 import fr.bmarsaud.boxedroid.entity.Device;
-import fr.bmarsaud.boxedroid.program.observers.AggregateObserver;
+import fr.bmarsaud.boxedroid.program.observer.AggregateObserver;
 import fr.bmarsaud.boxedroid.util.IOUtils;
 
 /**

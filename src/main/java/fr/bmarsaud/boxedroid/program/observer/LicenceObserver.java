@@ -1,4 +1,4 @@
-package fr.bmarsaud.boxedroid.program.observers;
+package fr.bmarsaud.boxedroid.program.observer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

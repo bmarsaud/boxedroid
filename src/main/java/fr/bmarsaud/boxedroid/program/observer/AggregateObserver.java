@@ -1,4 +1,4 @@
-package fr.bmarsaud.boxedroid.program.observers;
+package fr.bmarsaud.boxedroid.program.observer;
 
 import java.util.ArrayList;
 import java.util.List;
