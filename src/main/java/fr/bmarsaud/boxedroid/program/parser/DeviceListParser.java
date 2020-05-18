@@ -1,4 +1,4 @@
-package fr.bmarsaud.boxedroid.util;
+package fr.bmarsaud.boxedroid.program.parser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,6 +6,7 @@ import java.util.Observer;
 
 import fr.bmarsaud.boxedroid.entity.Device;
 import fr.bmarsaud.boxedroid.program.observers.AggregateObserver;
+import fr.bmarsaud.boxedroid.util.IOUtils;
 
 /**
  * Parse the output of the AVD Manager list device command to a list of devices

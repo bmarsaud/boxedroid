@@ -1,14 +1,14 @@
-package fr.bmarsaud.boxedroid.util;
+package fr.bmarsaud.boxedroid.program.parser;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Observable;
 import java.util.Observer;
 
 import fr.bmarsaud.boxedroid.entity.packages.AvailableUpdates;
 import fr.bmarsaud.boxedroid.entity.packages.InstalledPackage;
 import fr.bmarsaud.boxedroid.entity.packages.AvailablePackage;
 import fr.bmarsaud.boxedroid.program.observers.AggregateObserver;
+import fr.bmarsaud.boxedroid.util.IOUtils;
 
 /**
  * Parse the output of the SDK Manager list command to three {@link List} containing

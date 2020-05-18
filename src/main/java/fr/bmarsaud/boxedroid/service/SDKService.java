@@ -18,7 +18,7 @@ import fr.bmarsaud.boxedroid.entity.packages.AvailableUpdates;
 import fr.bmarsaud.boxedroid.entity.packages.InstalledPackage;
 import fr.bmarsaud.boxedroid.program.SDKManager;
 import fr.bmarsaud.boxedroid.program.observers.LicenceObserver;
-import fr.bmarsaud.boxedroid.util.PackagesListParser;
+import fr.bmarsaud.boxedroid.program.parser.PackagesListParser;
 
 public class SDKService {
     private Logger logger = LoggerFactory.getLogger(SDKService.class);

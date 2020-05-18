@@ -17,7 +17,7 @@ import fr.bmarsaud.boxedroid.entity.exception.AVDNameUsedException;
 import fr.bmarsaud.boxedroid.entity.exception.DeviceNotAvailableException;
 import fr.bmarsaud.boxedroid.entity.exception.SDKException;
 import fr.bmarsaud.boxedroid.program.AVDManager;
-import fr.bmarsaud.boxedroid.util.DeviceListParser;
+import fr.bmarsaud.boxedroid.program.parser.DeviceListParser;
 import fr.bmarsaud.boxedroid.util.IOUtils;
 
 public class AVDService {
