@@ -106,7 +106,7 @@ public class AVDService {
     private void loadAVDs() {
         avds.clear();
 
-        List<String> avdDirs = IOUtils.getFilesInDir(avdsPath);
+        List<String> avdDirs = IOUtils.getFilesInDir(avdsPath, false);
         for(String avdDir : avdDirs) {
             String dirName = new File(avdDir).getName();
 
