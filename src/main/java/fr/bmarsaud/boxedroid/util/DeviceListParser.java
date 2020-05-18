@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Observer;
 
 import fr.bmarsaud.boxedroid.entity.Device;
+import fr.bmarsaud.boxedroid.program.observers.AggregateObserver;
 
 /**
  * Parse the output of the AVD Manager list device command to a list of devices
@@ -25,10 +26,7 @@ public class DeviceListParser {
     public DeviceListParser() {
         this.devices = new ArrayList<>();
         this.programOutput = new ArrayList<>();
-        this.observer = (program, obj) -> { // JS style <3
-            String line = (String) obj;
-            programOutput.add(line);
-        };
+        this.observer = new AggregateObserver(this.programOutput);
     }
 
     /**

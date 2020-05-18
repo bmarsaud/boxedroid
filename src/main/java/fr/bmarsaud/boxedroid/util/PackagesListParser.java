@@ -8,6 +8,7 @@ import java.util.Observer;
 import fr.bmarsaud.boxedroid.entity.packages.AvailableUpdates;
 import fr.bmarsaud.boxedroid.entity.packages.InstalledPackage;
 import fr.bmarsaud.boxedroid.entity.packages.AvailablePackage;
+import fr.bmarsaud.boxedroid.program.observers.AggregateObserver;
 
 /**
  * Parse the output of the SDK Manager list command to three {@link List} containing
@@ -48,10 +49,7 @@ public class PackagesListParser {
         this.installedPackages = new ArrayList<>();
         this.availableUpdates = new ArrayList<>();
         this.programOutput = new ArrayList<>();
-        this.observer = (program, obj) -> { // JS style <3
-            String line = (String) obj;
-            programOutput.add(line);
-        };
+        this.observer = new AggregateObserver(this.programOutput);
     }
 
     /**
