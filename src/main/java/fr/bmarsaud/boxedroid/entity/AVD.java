@@ -25,8 +25,20 @@ public class AVD {
         this.path = path;
     }
 
+    /**
+     * Load the AVD INI configuration from disk
+     * @throws IOException
+     */
     public void loadConfig() throws IOException {
         iniConfig = INIService.read(new File(path, CONFIG_PATH));
+    }
+
+    /**
+     * Save the AVD INI configuration to disk
+     * @throws IOException
+     */
+    public void save() throws IOException {
+        INIService.write(new File(path, CONFIG_PATH), iniConfig);
     }
 
     public APILevel getAPILevel() {
@@ -60,5 +72,14 @@ public class AVD {
 
     public String getPath() {
         return path;
+    }
+
+    /**
+     * Edit the AVD INI configuration
+     * @param key The key to set the value to
+     * @param value The value
+     */
+    public void editConfig(String key, String value) {
+        iniConfig.put(key, value);
     }
 }
