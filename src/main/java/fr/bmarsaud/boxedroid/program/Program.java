@@ -16,6 +16,8 @@ import java.util.Observable;
 import java.util.Observer;
 
 import fr.bmarsaud.boxedroid.entity.exception.SDKException;
+import fr.bmarsaud.boxedroid.program.observer.ErrorObserver;
+import fr.bmarsaud.boxedroid.program.observer.InfoObserver;
 
 /**
  * A abstraction of an external executable program
@@ -29,11 +31,16 @@ public class Program extends Observable {
     private ArrayList<Observer> infoObservers;
     private ArrayList<Observer> errorObservers;
 
+    private InfoObserver infoObserver;
+    private ErrorObserver errorObserver;
+
     public Program(String path, Map<String, String> environment) {
         this.path = path;
         this.environment = environment;
         this.infoObservers = new ArrayList<>();
         this.errorObservers = new ArrayList<>();
+        this.infoObserver = new InfoObserver();
+        this.errorObserver = new ErrorObserver();
     }
 
     public Program(String path) {
@@ -41,6 +48,8 @@ public class Program extends Observable {
         this.environment = new HashMap<>();
         this.infoObservers = new ArrayList<>();
         this.errorObservers = new ArrayList<>();
+        this.infoObserver = new InfoObserver();
+        this.errorObserver = new ErrorObserver();
     }
 
     /**
@@ -179,5 +188,30 @@ public class Program extends Observable {
         writer.write(input, 0, input.length());
         writer.newLine();
         writer.close();
+    }
+
+
+    /**
+     * Activate or deactivate the logging of the program output to the standard output
+     * @param redirect True to activate the redirection, False instead
+     */
+    public void redirectInfo(boolean redirect) {
+        if(redirect) {
+            onInfo(infoObserver);
+        } else {
+            unInfo(infoObserver);
+        }
+    }
+
+    /**
+     * Activate or deactivate the logging of the program error to the standard error
+     * @param redirect True to activate the redirection, False instead
+     */
+    public void redirectError(boolean redirect) {
+        if(redirect) {
+            onError(errorObserver);
+        } else {
+            unError(errorObserver);
+        }
     }
 }
