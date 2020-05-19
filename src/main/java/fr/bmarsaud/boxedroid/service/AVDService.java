@@ -20,6 +20,8 @@ import fr.bmarsaud.boxedroid.entity.exception.SDKException;
 import fr.bmarsaud.boxedroid.entity.exception.UnknownAVDException;
 import fr.bmarsaud.boxedroid.program.AVDManager;
 import fr.bmarsaud.boxedroid.program.Emulator;
+import fr.bmarsaud.boxedroid.program.observer.ErrorObserver;
+import fr.bmarsaud.boxedroid.program.observer.InfoObserver;
 import fr.bmarsaud.boxedroid.program.parser.DeviceListParser;
 import fr.bmarsaud.boxedroid.util.IOUtils;
 
@@ -90,8 +92,15 @@ public class AVDService {
 
         try {
             logger.info("Launching avd '" + avdName + "'...");
+
+            emulator.redirectInfo(true);
+            emulator.redirectError(true);
+
             Process process = emulator.launch(avdName);
             process.waitFor();
+
+            emulator.redirectInfo(false);
+            emulator.redirectError(false);
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
