@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import fr.bmarsaud.boxedroid.entity.ABI;
 import fr.bmarsaud.boxedroid.entity.APILevel;
@@ -16,23 +17,30 @@ import fr.bmarsaud.boxedroid.entity.Variant;
 import fr.bmarsaud.boxedroid.entity.exception.AVDNameUsedException;
 import fr.bmarsaud.boxedroid.entity.exception.DeviceNotAvailableException;
 import fr.bmarsaud.boxedroid.entity.exception.SDKException;
+import fr.bmarsaud.boxedroid.entity.exception.UnknownAVDException;
 import fr.bmarsaud.boxedroid.program.AVDManager;
+import fr.bmarsaud.boxedroid.program.Emulator;
 import fr.bmarsaud.boxedroid.program.parser.DeviceListParser;
 import fr.bmarsaud.boxedroid.util.IOUtils;
 
 public class AVDService {
-    private Logger logger = LoggerFactory.getLogger(AVDService.class);
-    private List<Device> availableDevices;
-    private List<AVD> avds;
-
     private static final String AVD_MANAGER_PATH = "tools/bin/avdmanager";
+    private static final String EMULATOR_PATH = "emulator/emulator";
     private static final String AVD_DIR = "avd";
+    private static final String SYS_IMAGE_PREFIX = "Sdk/";
+
+    private Logger logger = LoggerFactory.getLogger(AVDService.class);
 
     private AVDManager avdManager;
+    private Emulator emulator;
+
+    private List<Device> availableDevices;
+    private List<AVD> avds;
     private String avdsPath;
 
     public AVDService(String sdkPath, String boxedroidPath) {
         this.avdManager = new AVDManager(new File(sdkPath, AVD_MANAGER_PATH).getAbsolutePath());
+        this.emulator = new Emulator(new File(sdkPath, EMULATOR_PATH).getAbsolutePath(), sdkPath);
         this.avdsPath = new File(boxedroidPath, AVD_DIR).getAbsolutePath();
         this.avds = new ArrayList<>();
     }
@@ -62,6 +70,29 @@ public class AVDService {
             Process process = avdManager.createAVD(avdName, apiLevel, abi,variant,device, avdsPath);
             process.waitFor();
         } catch(IOException |InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        fixAVDSysImagePath(avdName);
+    }
+
+    /**
+     * Launch an AVD in an emulator
+     * @param avdName The AVD name to launch
+     * @throws SDKException
+     */
+    public void launch(String avdName) throws SDKException {
+        loadAVDs();
+
+        if(!avdExists(avdName)) {
+            throw new UnknownAVDException(avdName);
+        }
+
+        try {
+            logger.info("Launching avd '" + avdName + "'...");
+            Process process = emulator.launch(avdName);
+            process.waitFor();
+        } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
     }
@@ -134,4 +165,35 @@ public class AVDService {
 
         return false;
     }
+
+    /**
+     * Fix the system image path of the AVD by removing the prefixed directory added in the path by
+     * avdmanager
+     * @param avdName The AVD name to fix
+     * @throws UnknownAVDException
+     */
+    private void fixAVDSysImagePath(String avdName) throws UnknownAVDException {
+        loadAVDs();
+        Optional<AVD> optAVD = avds.stream().filter(avd -> avd.getName().equals(avdName)).findFirst();
+
+        if(!optAVD.isPresent()) {
+            throw new UnknownAVDException(avdName);
+        }
+
+        try {
+            AVD avd = optAVD.get();
+            avd.loadConfig();
+
+            String sysImage = avd.getConfigValue(AVD.SYS_IMAGE_INI_KEY);
+            if(sysImage.startsWith(SYS_IMAGE_PREFIX)) {
+                logger.info("Fixing wrong system image path '" + sysImage + "'...");
+                avd.editConfig(AVD.SYS_IMAGE_INI_KEY, sysImage.substring(SYS_IMAGE_PREFIX.length()));
+                avd.save();
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 }
