@@ -134,4 +134,35 @@ public class AVDService {
 
         return false;
     }
+
+    /**
+     * Fix the system image path of the AVD by removing the prefixed directory added in the path by
+     * avdmanager
+     * @param avdName The AVD name to fix
+     * @throws UnknownAVDException
+     */
+    private void fixAVDSysImagePath(String avdName) throws UnknownAVDException {
+        loadAVDs();
+        Optional<AVD> optAVD = avds.stream().filter(avd -> avd.getName().equals(avdName)).findFirst();
+
+        if(!optAVD.isPresent()) {
+            throw new UnknownAVDException(avdName);
+        }
+
+        try {
+            AVD avd = optAVD.get();
+            avd.loadConfig();
+
+            String sysImage = avd.getConfigValue(AVD.SYS_IMAGE_INI_KEY);
+            if(sysImage.startsWith(SYS_IMAGE_PREFIX)) {
+                logger.info("Fixing wrong system image path '" + sysImage + "'...");
+                avd.editConfig(AVD.SYS_IMAGE_INI_KEY, sysImage.substring(SYS_IMAGE_PREFIX.length()));
+                avd.save();
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 }

@@ -10,7 +10,7 @@ import fr.bmarsaud.boxedroid.service.INIService;
  * A created AVD
  */
 public class AVD {
-    private static final String SYS_IMAGE_INI_KEY = "image.sysdir.1";
+    public static final String SYS_IMAGE_INI_KEY = "image.sysdir.1";
     private static final String DEVICE_NAME_KEY = "hw.device.name";
     private static final String SYS_IMAGE_PATH_DIR = "system-images";
 
@@ -81,5 +81,15 @@ public class AVD {
      */
     public void editConfig(String key, String value) {
         iniConfig.put(key, value);
+    }
+
+
+    /**
+     * Return a configuration value from its key
+     * @param key The configuration key
+     * @return The configuration value
+     */
+    public String getConfigValue(String key) {
+        return iniConfig.get(key);
     }
 }
