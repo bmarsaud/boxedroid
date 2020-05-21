@@ -27,4 +27,6 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
 
       - name: SonarCloud Scan
-        run: mvn sonar:sonar -Dsonar.host.url=https://sonarcloud.io -Dsonar.organization=bmarsaud_boxedroid -Dsonar.login=${{ secrets.SONAR_TOKEN }}
+        run: mvn sonar:sonar -Dsonar.host.url=https://sonarcloud.io -Dsonar.projectKey=boxedroid -Dsonar.organization=bmarsaud -Dsonar.login=${{ secrets.SONAR_TOKEN }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
