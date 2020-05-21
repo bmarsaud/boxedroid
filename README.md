@@ -1,4 +1,11 @@
 # boxedroid
+
+[![Build status](https://github.com/bmarsaud/boxedroid/workflows/CI%20Maven%20build/badge.svg)](https://github.com/bmarsaud/boxedroid/actions?query=workflow%3A%22CI+Maven+build%22)
+[![Code coverage percentage](https://codecov.io/gh/bmarsaud/boxedroid/branch/master/graph/badge.svg)](https://codecov.io/gh/bmarsaud/boxedroid/branch/master)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=boxedroid&metric=alert_status)](https://sonarcloud.io/dashboard?id=boxedroid)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=boxedroid&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=boxedroid)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=boxedroid&metric=security_rating)](https://sonarcloud.io/dashboard?id=boxedroid)
+
 *Work In Progress project!*
 
 :package: boxedroid is a cross-plateform packaging of the official Android SDK emulator.
