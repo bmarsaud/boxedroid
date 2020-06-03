@@ -1,5 +1,7 @@
 package fr.bmarsaud.boxedroid;
 
+import com.sun.org.apache.xpath.internal.operations.And;
+
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
@@ -25,13 +27,22 @@ public class Boxedroid {
 
     public static void main(String[] args) {
         Options options = new Options();
-
         options.addOption(
             Option.builder()
                 .longOpt("sdk")
                 .desc("Android SDK absolute path")
                 .hasArg()
                 .argName("SDK_PATH")
+                .required()
+                .build()
+        );
+
+        options.addOption(
+            Option.builder()
+                .longOpt("android")
+                .desc("Android Version")
+                .hasArg()
+                .argName("ANDROID_VERSION")
                 .required()
                 .build()
         );
@@ -47,6 +58,23 @@ public class Boxedroid {
             System.exit(1);
         }
 
-        Boxedroid boxedroid = new Boxedroid(cmd.getOptionValue("sdk"));
+        String sdkPath = cmd.getOptionValue("sdk");
+        AndroidVersion androidVersion = AndroidVersion.fromCode(cmd.getOptionValue("android"));
+
+        if(androidVersion == null) {
+            System.err.println("Unknown android version '" + cmd.getOptionValue("android") +"', available versions :");
+            for(AndroidVersion version : AndroidVersion.values()) {
+                System.err.print("- ");
+                for(int i = 0; i < version.getCodes().length; i++) {
+                    System.err.print(version.getCodes()[i]);
+                    if(i < version.getCodes().length - 1) {
+                        System.err.print(", ");
+                    }
+                }
+                System.err.print("\n");
+            }
+        }
+
+        Boxedroid boxedroid = new Boxedroid(sdkPath);
     }
 }
