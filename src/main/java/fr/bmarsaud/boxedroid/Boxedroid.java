@@ -11,6 +11,8 @@ import org.apache.commons.cli.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.stream.Collectors;
@@ -46,7 +48,13 @@ public class Boxedroid {
     public void launchEmulator(AndroidVersion version, ABI abi, Variant variant, String device) {
         String currentDir = null;
         try {
-            currentDir = Boxedroid.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath();
+            URI uri = Boxedroid.class.getProtectionDomain().getCodeSource().getLocation().toURI();
+            File file = new File(uri);
+            if(file.isDirectory()) {
+                currentDir = uri.getPath();
+            } else {
+                currentDir = file.getParent();
+            }
         } catch (URISyntaxException e) {
             logger.error("Impossible to retrieve the current directory");
             System.exit(1);
