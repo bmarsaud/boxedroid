@@ -145,6 +145,7 @@ public class AVDService {
      */
     private void loadAVDs() {
         avds.clear();
+        new File(avdsPath).mkdirs();
 
         List<String> avdDirs = IOUtils.getFilesInDir(avdsPath, false);
         for(String avdDir : avdDirs) {
