@@ -12,6 +12,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.URISyntaxException;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 import fr.bmarsaud.boxedroid.entity.ABI;
 import fr.bmarsaud.boxedroid.entity.AndroidVersion;
@@ -22,8 +24,8 @@ import fr.bmarsaud.boxedroid.service.SDKService;
 
 public class Boxedroid {
     private static String DEFAULT_DEVICE = "pixel_2";
-    private static ABI DEFAULT_ABI = ABI.X86;
-    private static Variant DEFAULT_VARIANT = Variant.GOOGLE_APIS;
+    private static String DEFAULT_ABI = "x86";
+    private static String DEFAULT_VARIANT = "google_apis";
 
     private Logger logger = LoggerFactory.getLogger(Boxedroid.class);
     private String sdkPath;
@@ -36,7 +38,7 @@ public class Boxedroid {
      * Create and launch an emulator of a given version
      * @param version The Android version of the emulator
      */
-    public void launchEmulator(AndroidVersion version) {
+    public void launchEmulator(AndroidVersion version, ABI abi, Variant variant, String device) {
         String currentDir = null;
         try {
             currentDir = Boxedroid.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath();
@@ -48,8 +50,8 @@ public class Boxedroid {
         AVDService avdService = new AVDService(sdkPath, currentDir);
 
         try {
-            sdkService.install(version.getApiLevel(), DEFAULT_ABI, DEFAULT_VARIANT);
-            avdService.createAndLaunch(version.getApiLevel(), DEFAULT_ABI, DEFAULT_VARIANT, DEFAULT_DEVICE);
+            sdkService.install(version.getApiLevel(), abi, variant);
+            avdService.createAndLaunch(version.getApiLevel(), abi, variant, device);
         } catch(SDKException e) {
             logger.error(e.getMessage());
         }
@@ -60,7 +62,7 @@ public class Boxedroid {
         options.addOption(
             Option.builder()
                 .longOpt("sdk")
-                .desc("Android SDK absolute path")
+                .desc("Android SDK absolute path (required)")
                 .hasArg()
                 .argName("SDK_PATH")
                 .required()
@@ -70,29 +72,60 @@ public class Boxedroid {
         options.addOption(
             Option.builder()
                 .longOpt("android")
-                .desc("Android Version")
+                .desc("Android Version (required)")
                 .hasArg()
                 .argName("ANDROID_VERSION")
                 .required()
                 .build()
         );
 
-        HelpFormatter formatter = new HelpFormatter();
+        options.addOption(
+            Option.builder()
+                .longOpt("abi")
+                .desc("Emulator ABI")
+                .hasArg()
+                .argName("ABI")
+                .build()
+        );
+
+
+        options.addOption(
+            Option.builder()
+                .longOpt("variant")
+                .desc("Android platform variant")
+                .hasArg()
+                .argName("VARIANT")
+                .build()
+        );
+
+        options.addOption(
+            Option.builder()
+                .longOpt("device")
+                .desc("Emulator device")
+                .hasArg()
+                .argName("DEVICE_NAME")
+                .build()
+        );
+
+        HelpFormatter helpFormatter = new HelpFormatter();
         CommandLineParser parser = new DefaultParser();
         CommandLine cmd = null;
 
         try {
             cmd = parser.parse(options, args);
         } catch(ParseException e) {
-            formatter.printHelp("boxedroid [options]", options);
+            helpFormatter.printHelp("boxedroid --sdk <SDK_PATH> --android <ANDROID_VERSION> [options]", options);
             System.exit(1);
         }
 
         String sdkPath = cmd.getOptionValue("sdk");
         AndroidVersion androidVersion = AndroidVersion.fromCode(cmd.getOptionValue("android"));
+        ABI abi = ABI.fromId(cmd.getOptionValue("abi",  DEFAULT_ABI));
+        Variant variant = Variant.fromId(cmd.getOptionValue("variant", DEFAULT_VARIANT));
+        String device = cmd.getOptionValue("device", DEFAULT_DEVICE);
 
         if(androidVersion == null) {
-            System.err.println("Unknown android version '" + cmd.getOptionValue("android") +"', available versions :");
+            System.err.println("Unknown Android version '" + cmd.getOptionValue("android") +"', available versions:");
             for(AndroidVersion version : AndroidVersion.values()) {
                 System.err.print("- ");
                 for(int i = 0; i < version.getCodes().length; i++) {
@@ -103,9 +136,26 @@ public class Boxedroid {
                 }
                 System.err.print("\n");
             }
+            System.exit(1);
+        }
+
+        if(abi == null) {
+            System.err.println(
+                "Unknown ABI '" + cmd.getOptionValue("abi") + "', available ABIs: " +
+                Arrays.asList(ABI.values()).stream().map(ABI::name).map(String::toLowerCase).collect(Collectors.joining(", "))
+            );
+            System.exit(1);
+        }
+
+        if(variant == null) {
+            System.err.println(
+                "Unknown variant '" + cmd.getOptionValue("variant") + "', available variants: " +
+                Arrays.asList(Variant.values()).stream().map(Variant::name).map(String::toLowerCase).collect(Collectors.joining(", "))
+            );
+            System.exit(1);
         }
 
         Boxedroid boxedroid = new Boxedroid(sdkPath);
-        boxedroid.launchEmulator(androidVersion);
+        boxedroid.launchEmulator(androidVersion, abi, variant, device);
     }
 }

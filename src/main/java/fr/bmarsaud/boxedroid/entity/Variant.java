@@ -25,7 +25,7 @@ public enum Variant {
      */
     public static Variant fromId(String id) {
         for(Variant variant : Variant.values()) {
-            if(variant.getId().equals(id)) {
+            if(variant.getId().equals(id) || variant.name().equalsIgnoreCase(id)) {
                 return variant;
             }
         }
