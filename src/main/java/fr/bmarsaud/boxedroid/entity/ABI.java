@@ -25,7 +25,7 @@ public enum ABI {
      */
     public static ABI fromId(String id) {
         for(ABI abi : ABI.values()) {
-            if(abi.getId().equals(id)) {
+            if(abi.getId().equals(id) || abi.name().equalsIgnoreCase(id)) {
                 return abi;
             }
         }

@@ -20,8 +20,6 @@ import fr.bmarsaud.boxedroid.entity.exception.SDKException;
 import fr.bmarsaud.boxedroid.entity.exception.UnknownAVDException;
 import fr.bmarsaud.boxedroid.program.AVDManager;
 import fr.bmarsaud.boxedroid.program.Emulator;
-import fr.bmarsaud.boxedroid.program.observer.ErrorObserver;
-import fr.bmarsaud.boxedroid.program.observer.InfoObserver;
 import fr.bmarsaud.boxedroid.program.parser.DeviceListParser;
 import fr.bmarsaud.boxedroid.util.IOUtils;
 
@@ -45,6 +43,7 @@ public class AVDService {
         this.emulator = new Emulator(new File(sdkPath, EMULATOR_PATH).getAbsolutePath(), sdkPath);
         this.avdsPath = new File(boxedroidPath, AVD_DIR).getAbsolutePath();
         this.avds = new ArrayList<>();
+        this.availableDevices = new ArrayList<>();
     }
 
     /**
@@ -69,9 +68,10 @@ public class AVDService {
         }
 
         try {
+            logger.info("Creating avd '" + avdName + "'...");
             Process process = avdManager.createAVD(avdName, apiLevel, abi,variant,device, avdsPath);
             process.waitFor();
-        } catch(IOException |InterruptedException e) {
+        } catch(IOException | InterruptedException e) {
             e.printStackTrace();
         }
 
@@ -107,9 +107,33 @@ public class AVDService {
     }
 
     /**
-     * Load available devices list
+     * Create if needed an AVD and launch it
+     * @param apiLevel The API level of the AVD
+     * @param abi The ABI of the AVD
+     * @param variant The variant of the AVD
+     * @param device The device name of the AVD
+     * @throws SDKException
      */
-    private void loadDevices() {
+    public void createAndLaunch(APILevel apiLevel, ABI abi, Variant variant, String device) throws SDKException {
+        loadAVDs();
+        loadDevices();
+
+        String avdName = "boxedroid_" + apiLevel.getCode() + "_" + abi.getId() + "_" + variant.getId();
+
+        if(!avdExists(avdName)) {
+            create(avdName, apiLevel, abi, variant, device);
+        }
+
+        launch(avdName);
+    }
+
+    /**
+     * Load available devices list
+     * @param force If true, deactivate lazy loading and force the list update
+     */
+    private void loadDevices(boolean force) {
+        if(!force && availableDevices.size() > 0) return;
+
         try {
             DeviceListParser deviceListParser = new DeviceListParser();
 
@@ -127,13 +151,20 @@ public class AVDService {
     }
 
     /**
+     * Lazy load available devices list
+     */
+    private void loadDevices() {
+        loadDevices(false);
+    }
+
+    /**
      * Check if a given device name exists and is available
      * @param deviceName The device name to check
      * @return True if the device is available, false instead
      */
     private boolean isDeviceAvailable(String deviceName) {
         for(Device device : availableDevices) {
-            if(device.getName().equals(deviceName)) {
+            if(device.getCode().equals(deviceName)) {
                 return true;
             }
         }
@@ -141,10 +172,14 @@ public class AVDService {
     }
 
     /**
-     * Load avds from Boxedroid folder
+     * Load avds from avds folder
+     * @param force If true, deactivate lazy loading and force the list update
      */
-    private void loadAVDs() {
+    private void loadAVDs(boolean force) {
+        if(!force && avds.size() > 0) return;
+
         avds.clear();
+        new File(avdsPath).mkdirs();
 
         List<String> avdDirs = IOUtils.getFilesInDir(avdsPath, false);
         for(String avdDir : avdDirs) {
@@ -158,6 +193,13 @@ public class AVDService {
                 logger.error("Error loading avd \"" + avdDir + "\"");
             }
         }
+    }
+
+    /**
+     * Lazy load avds from avds folder
+     */
+    private void loadAVDs() {
+        loadAVDs(false);
     }
 
     /**
@@ -182,7 +224,7 @@ public class AVDService {
      * @throws UnknownAVDException
      */
     private void fixAVDSysImagePath(String avdName) throws UnknownAVDException {
-        loadAVDs();
+        loadAVDs(true);
         Optional<AVD> optAVD = avds.stream().filter(avd -> avd.getName().equals(avdName)).findFirst();
 
         if(!optAVD.isPresent()) {
@@ -205,4 +247,7 @@ public class AVDService {
         }
     }
 
+    public List<Device> getAvailableDevices() {
+        return availableDevices;
+    }
 }
