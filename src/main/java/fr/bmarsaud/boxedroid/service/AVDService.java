@@ -45,6 +45,7 @@ public class AVDService {
         this.emulator = new Emulator(new File(sdkPath, EMULATOR_PATH).getAbsolutePath(), sdkPath);
         this.avdsPath = new File(boxedroidPath, AVD_DIR).getAbsolutePath();
         this.avds = new ArrayList<>();
+        this.availableDevices = new ArrayList<>();
     }
 
     /**
@@ -108,8 +109,11 @@ public class AVDService {
 
     /**
      * Load available devices list
+     * @param force If true, deactivate lazy loading and force the list update
      */
-    private void loadDevices() {
+    private void loadDevices(boolean force) {
+        if(!force && availableDevices.size() > 0) return;
+
         try {
             DeviceListParser deviceListParser = new DeviceListParser();
 
@@ -127,6 +131,13 @@ public class AVDService {
     }
 
     /**
+     * Lazy load available devices list
+     */
+    private void loadDevices() {
+        loadDevices(false);
+    }
+
+    /**
      * Check if a given device name exists and is available
      * @param deviceName The device name to check
      * @return True if the device is available, false instead
@@ -141,9 +152,12 @@ public class AVDService {
     }
 
     /**
-     * Load avds from Boxedroid folder
+     * Load avds from avds folder
+     * @param force If true, deactivate lazy loading and force the list update
      */
-    private void loadAVDs() {
+    private void loadAVDs(boolean force) {
+        if(!force && avds.size() > 0) return;
+
         avds.clear();
         new File(avdsPath).mkdirs();
 
@@ -159,6 +173,13 @@ public class AVDService {
                 logger.error("Error loading avd \"" + avdDir + "\"");
             }
         }
+    }
+
+    /**
+     * Lazy load avds from avds folder
+     */
+    private void loadAVDs() {
+        loadAVDs(false);
     }
 
     /**
@@ -183,7 +204,7 @@ public class AVDService {
      * @throws UnknownAVDException
      */
     private void fixAVDSysImagePath(String avdName) throws UnknownAVDException {
-        loadAVDs();
+        loadAVDs(true);
         Optional<AVD> optAVD = avds.stream().filter(avd -> avd.getName().equals(avdName)).findFirst();
 
         if(!optAVD.isPresent()) {
