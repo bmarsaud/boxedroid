@@ -247,4 +247,7 @@ public class AVDService {
         }
     }
 
+    public List<Device> getAvailableDevices() {
+        return availableDevices;
+    }
 }

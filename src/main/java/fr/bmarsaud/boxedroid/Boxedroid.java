@@ -17,7 +17,9 @@ import java.util.stream.Collectors;
 
 import fr.bmarsaud.boxedroid.entity.ABI;
 import fr.bmarsaud.boxedroid.entity.AndroidVersion;
+import fr.bmarsaud.boxedroid.entity.Device;
 import fr.bmarsaud.boxedroid.entity.Variant;
+import fr.bmarsaud.boxedroid.entity.exception.DeviceNotAvailableException;
 import fr.bmarsaud.boxedroid.entity.exception.SDKException;
 import fr.bmarsaud.boxedroid.service.AVDService;
 import fr.bmarsaud.boxedroid.service.SDKService;
@@ -35,8 +37,11 @@ public class Boxedroid {
     }
 
     /**
-     * Create and launch an emulator of a given version
-     * @param version The Android version of the emulator
+     * Launch an emulator of a given version, abi, variant and on a certain device
+     * @param version The Android version the AVD
+     * @param abi The ABI of the AVD
+     * @param variant The variant of the AVD
+     * @param device The device name of the AVD
      */
     public void launchEmulator(AndroidVersion version, ABI abi, Variant variant, String device) {
         String currentDir = null;
@@ -44,6 +49,7 @@ public class Boxedroid {
             currentDir = Boxedroid.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath();
         } catch (URISyntaxException e) {
             logger.error("Impossible to retrieve the current directory");
+            System.exit(1);
         };
 
         SDKService sdkService = new SDKService(sdkPath);
@@ -54,6 +60,14 @@ public class Boxedroid {
             avdService.createAndLaunch(version.getApiLevel(), abi, variant, device);
         } catch(SDKException e) {
             logger.error(e.getMessage());
+
+            if(e instanceof DeviceNotAvailableException) {
+                logger.error(
+                    "Available devices: " +
+                    avdService.getAvailableDevices().stream().map(Device::getCode).collect(Collectors.joining(", "))
+                );
+            }
+            System.exit(1);
         }
     }
 
