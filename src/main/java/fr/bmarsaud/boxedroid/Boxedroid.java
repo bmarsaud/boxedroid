@@ -1,28 +1,58 @@
 package fr.bmarsaud.boxedroid;
 
-import com.sun.org.apache.xpath.internal.operations.And;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
-import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.net.URISyntaxException;
+
+import fr.bmarsaud.boxedroid.entity.ABI;
 import fr.bmarsaud.boxedroid.entity.AndroidVersion;
+import fr.bmarsaud.boxedroid.entity.Variant;
 import fr.bmarsaud.boxedroid.entity.exception.SDKException;
-import fr.bmarsaud.boxedroid.program.AVDManager;
 import fr.bmarsaud.boxedroid.service.AVDService;
+import fr.bmarsaud.boxedroid.service.SDKService;
 
 public class Boxedroid {
+    private static String DEFAULT_DEVICE = "pixel_2";
+    private static ABI DEFAULT_ABI = ABI.X86;
+    private static Variant DEFAULT_VARIANT = Variant.GOOGLE_APIS;
+
+    private Logger logger = LoggerFactory.getLogger(Boxedroid.class);
     private String sdkPath;
 
     public Boxedroid(String sdkPath) {
         this.sdkPath = sdkPath;
+    }
+
+    /**
+     * Create and launch an emulator of a given version
+     * @param version The Android version of the emulator
+     */
+    public void launchEmulator(AndroidVersion version) {
+        String currentDir = null;
+        try {
+            currentDir = Boxedroid.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath();
+        } catch (URISyntaxException e) {
+            logger.error("Impossible to retrieve the current directory");
+        };
+
+        SDKService sdkService = new SDKService(sdkPath);
+        AVDService avdService = new AVDService(sdkPath, currentDir);
+
+        try {
+            sdkService.install(version.getApiLevel(), DEFAULT_ABI, DEFAULT_VARIANT);
+            avdService.createAndLaunch(version.getApiLevel(), DEFAULT_ABI, DEFAULT_VARIANT, DEFAULT_DEVICE);
+        } catch(SDKException e) {
+            logger.error(e.getMessage());
+        }
     }
 
     public static void main(String[] args) {
@@ -76,5 +106,6 @@ public class Boxedroid {
         }
 
         Boxedroid boxedroid = new Boxedroid(sdkPath);
+        boxedroid.launchEmulator(androidVersion);
     }
 }

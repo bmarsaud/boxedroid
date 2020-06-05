@@ -20,8 +20,6 @@ import fr.bmarsaud.boxedroid.entity.exception.SDKException;
 import fr.bmarsaud.boxedroid.entity.exception.UnknownAVDException;
 import fr.bmarsaud.boxedroid.program.AVDManager;
 import fr.bmarsaud.boxedroid.program.Emulator;
-import fr.bmarsaud.boxedroid.program.observer.ErrorObserver;
-import fr.bmarsaud.boxedroid.program.observer.InfoObserver;
 import fr.bmarsaud.boxedroid.program.parser.DeviceListParser;
 import fr.bmarsaud.boxedroid.util.IOUtils;
 
@@ -70,9 +68,10 @@ public class AVDService {
         }
 
         try {
+            logger.info("Creating avd '" + avdName + "'...");
             Process process = avdManager.createAVD(avdName, apiLevel, abi,variant,device, avdsPath);
             process.waitFor();
-        } catch(IOException |InterruptedException e) {
+        } catch(IOException | InterruptedException e) {
             e.printStackTrace();
         }
 
@@ -105,6 +104,27 @@ public class AVDService {
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Create if needed an AVD and launch it
+     * @param apiLevel The API level of the AVD
+     * @param abi The ABI of the AVD
+     * @param variant The variant of the AVD
+     * @param device The device name of the AVD
+     * @throws SDKException
+     */
+    public void createAndLaunch(APILevel apiLevel, ABI abi, Variant variant, String device) throws SDKException {
+        loadAVDs();
+        loadDevices();
+
+        String avdName = "boxedroid_" + apiLevel.getCode() + "_" + abi.getId() + "_" + variant.getId();
+
+        if(!avdExists(avdName)) {
+            create(avdName, apiLevel, abi, variant, device);
+        }
+
+        launch(avdName);
     }
 
     /**
