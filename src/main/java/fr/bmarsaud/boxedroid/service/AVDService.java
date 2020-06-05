@@ -133,7 +133,7 @@ public class AVDService {
      */
     private boolean isDeviceAvailable(String deviceName) {
         for(Device device : availableDevices) {
-            if(device.getName().equals(deviceName)) {
+            if(device.getCode().equals(deviceName)) {
                 return true;
             }
         }
