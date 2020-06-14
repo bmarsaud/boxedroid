@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Retrieve version
-        run: echo ::set-env name=BOXEDROID_VERSION::$(echo $GITHUB_REF | cut -c 2-)
+        run: echo ::set-env name=BOXEDROID_VERSION::$(echo $GITHUB_REF | cut -d / -f 3 | cut -c 2-)
 
       - name: Code checkout
         uses: actions/checkout@v2
