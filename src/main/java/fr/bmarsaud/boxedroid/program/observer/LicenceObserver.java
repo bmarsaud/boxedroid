@@ -61,6 +61,7 @@ public class LicenceObserver implements Observer {
             }
 
             currentIndex = 0;
+            licencing = false;
         }
     }
 }
