@@ -18,6 +18,7 @@ import fr.bmarsaud.boxedroid.entity.packages.AvailableUpdates;
 import fr.bmarsaud.boxedroid.entity.packages.InstalledPackage;
 import fr.bmarsaud.boxedroid.program.SDKManager;
 import fr.bmarsaud.boxedroid.program.observer.LicenceObserver;
+import fr.bmarsaud.boxedroid.program.observer.ProgressObserver;
 import fr.bmarsaud.boxedroid.program.parser.PackagesListParser;
 
 public class SDKService {
@@ -99,8 +100,12 @@ public class SDKService {
 
         Process process;
         LicenceObserver licenceObserver = new LicenceObserver();
+        ProgressObserver progressObserver = new ProgressObserver((progress) -> {
+            logger.info("Installing package " + progress.getProgress() + "% - " + progress.getCurrentStep());
+        });
 
         sdkManager.onInfo(licenceObserver);
+        sdkManager.onInfo(progressObserver);
 
         if(!isPackagedInstalled(systemImagePackage)) {
             if(isPackagedAvailable(systemImagePackage)) {
@@ -127,6 +132,7 @@ public class SDKService {
         }
 
         sdkManager.unInfo(licenceObserver);
+        sdkManager.unInfo(progressObserver);
     }
 
     /**
@@ -137,8 +143,12 @@ public class SDKService {
     private void installTools() throws SDKException, IOException, InterruptedException {
         Process process;
         LicenceObserver licenceObserver = new LicenceObserver();
+        ProgressObserver progressObserver = new ProgressObserver((progress) -> {
+            logger.info("Installing tools " + progress.getProgress() + "% - " + progress.getCurrentStep());
+        });
 
         sdkManager.onInfo(licenceObserver);
+        sdkManager.onInfo(progressObserver);
 
         if(!isPackagedInstalled("platform-tools")) {
             logger.info("Installing package 'platform-tools'...");
@@ -162,6 +172,7 @@ public class SDKService {
         }
 
         sdkManager.unInfo(licenceObserver);
+        sdkManager.unInfo(progressObserver);
     }
 
     /**
