@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
  * Program observer collecting progress bar details
  */
 public class ProgressObserver implements Observer {
-    private static String PROGRESS_REGEX = "([0-9]*)% ([\\w .]*)";
+    private static String PROGRESS_REGEX = "([0-9]*)% ([^\\n]*)";
 
     private Pattern pattern;
     private Consumer<ProgressObserver>[] callbacks;
