@@ -20,7 +20,7 @@ public class PackagesListParser {
     private static final String COLUMN_SEPARATOR = " | ";
     private static final String ESCAPED_COLUMN_SEPARATOR = " \\| ";
 
-    private List<AvailablePackage> availableAvailablePackages;
+    private List<AvailablePackage> availablePackages;
     private List<InstalledPackage> installedPackages;
     private List<AvailableUpdates> availableUpdates;
 
@@ -45,7 +45,7 @@ public class PackagesListParser {
     }
 
     public PackagesListParser() {
-        this.availableAvailablePackages = new ArrayList<>();
+        this.availablePackages = new ArrayList<>();
         this.installedPackages = new ArrayList<>();
         this.availableUpdates = new ArrayList<>();
         this.programOutput = new ArrayList<>();
@@ -55,7 +55,7 @@ public class PackagesListParser {
     /**
      * Parse the output of the SDK Manager list command process.
      *
-     * The packages will be available in the lists accessible with {@link PackagesListParser#getAvailableAvailablePackages()},
+     * The packages will be available in the lists accessible with {@link PackagesListParser#getAvailablePackages()},
      * {@link PackagesListParser#getInstalledPackages()} and {@link PackagesListParser#getAvailableUpdates()}
      * @param process The SDK Manager list command process
      */
@@ -89,7 +89,7 @@ public class PackagesListParser {
                             IOUtils.removeSurroundingSpaces(columns[3])
                     ));
                 } else if(status == PackageStatus.AVAILABLE) {
-                    availableAvailablePackages.add(new AvailablePackage(
+                    availablePackages.add(new AvailablePackage(
                             IOUtils.removeSurroundingSpaces(columns[0]),
                             IOUtils.removeSurroundingSpaces(columns[1]),
                             IOUtils.removeSurroundingSpaces(columns[2])
@@ -111,8 +111,8 @@ public class PackagesListParser {
      * Will be empty if {@link PackagesListParser#parse(Process)} was not called before
      * @return The parsed list of available packages
      */
-    public List<AvailablePackage> getAvailableAvailablePackages() {
-        return availableAvailablePackages;
+    public List<AvailablePackage> getAvailablePackages() {
+        return availablePackages;
     }
 
     /**

@@ -188,7 +188,7 @@ public class SDKService {
 
             sdkManager.unInfo(listParser.getObserver());
 
-            availablePackages = listParser.getAvailableAvailablePackages();
+            availablePackages = listParser.getAvailablePackages();
             installedPackages = listParser.getInstalledPackages();
             availableUpdates = listParser.getAvailableUpdates();
         } catch(IOException | InterruptedException e) {
