@@ -65,6 +65,8 @@ public class DeviceListParser {
                 currentDevice.setTag(tag);
             }
         }
+
+        devices.add(currentDevice);
     }
 
     /**
