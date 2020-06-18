@@ -1,5 +1,7 @@
 package fr.bmarsaud.boxedroid.entity;
 
+import java.util.Objects;
+
 /**
  * An available device for AVD configuration
  */
@@ -60,5 +62,17 @@ public class Device {
 
     public void setTag(String tag) {
         this.tag = tag;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Device device = (Device) o;
+        return id == device.id &&
+                Objects.equals(code, device.code) &&
+                Objects.equals(name, device.name) &&
+                Objects.equals(oem, device.oem) &&
+                Objects.equals(tag, device.tag);
     }
 }
