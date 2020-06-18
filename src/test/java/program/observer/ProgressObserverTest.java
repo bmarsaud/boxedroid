@@ -1,4 +1,4 @@
-package progam.observer;
+package program.observer;
 import static org.mockito.Mockito.*;
 
 import org.junit.jupiter.api.DisplayName;
