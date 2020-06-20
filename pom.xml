@@ -94,13 +94,15 @@
                 <version>0.8.5</version>
                 <configuration>
                     <excludes>
-                        <exclude>fr.bmarsaud.boxedroid.entity.exception</exclude>
-                        <exclude>fr.bmarsaud.boxedroid.entity.packages</exclude>
-                        <exclude>fr.bmarsaud.boxedroid.entity.Device</exclude>
-                        <exclude>fr.bmarsaud.boxedroid.Boxedroid</exclude>
-                        <exclude>fr.bmarsaud.boxedroid.program.AVDManager</exclude>
-                        <exclude>fr.bmarsaud.boxedroid.program.Emulator</exclude>
-                        <exclude>fr.bmarsaud.boxedroid.program.SDKManager</exclude>
+                        <exclude>fr/bmarsaud/boxedroid/Boxedroid*</exclude>
+                        <exclude>fr/bmarsaud/boxedroid/entity/Device.*</exclude>
+                        <exclude>fr/bmarsaud/boxedroid/entity/exception/*</exclude>
+                        <exclude>fr/bmarsaud/boxedroid/entity/packages/*</exclude>
+                        <exclude>fr/bmarsaud/boxedroid/program/AVDManager.*</exclude>
+                        <exclude>fr/bmarsaud/boxedroid/program/Emulator.*</exclude>
+                        <exclude>fr/bmarsaud/boxedroid/program/SDKManager.*</exclude>
+                        <exclude>fr/bmarsaud/boxedroid/program/observer/InfoObserver.*</exclude>
+                        <exclude>fr/bmarsaud/boxedroid/program/observer/ErrorObserver.*</exclude>
                     </excludes>
                 </configuration>
                 <executions>
