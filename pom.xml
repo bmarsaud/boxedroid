@@ -103,6 +103,7 @@
                         <exclude>fr/bmarsaud/boxedroid/program/SDKManager.*</exclude>
                         <exclude>fr/bmarsaud/boxedroid/program/observer/InfoObserver.*</exclude>
                         <exclude>fr/bmarsaud/boxedroid/program/observer/ErrorObserver.*</exclude>
+                        <exclude>fr/bmarsaud/boxedroid/program/observer/licence/StdIOLicenceObserver.*</exclude>
                     </excludes>
                 </configuration>
                 <executions>
