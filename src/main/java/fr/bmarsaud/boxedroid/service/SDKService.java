@@ -17,8 +17,9 @@ import fr.bmarsaud.boxedroid.entity.packages.AvailablePackage;
 import fr.bmarsaud.boxedroid.entity.packages.AvailableUpdates;
 import fr.bmarsaud.boxedroid.entity.packages.InstalledPackage;
 import fr.bmarsaud.boxedroid.program.SDKManager;
-import fr.bmarsaud.boxedroid.program.observer.LicenceObserver;
+import fr.bmarsaud.boxedroid.program.observer.licence.LicenceObserver;
 import fr.bmarsaud.boxedroid.program.observer.ProgressObserver;
+import fr.bmarsaud.boxedroid.program.observer.licence.StdIOLicenceObserver;
 import fr.bmarsaud.boxedroid.program.parser.PackagesListParser;
 
 public class SDKService {
@@ -99,7 +100,7 @@ public class SDKService {
         String platformsPackage = SDKService.getPlatformsPackageName(apiLevel);
 
         Process process;
-        LicenceObserver licenceObserver = new LicenceObserver();
+        LicenceObserver licenceObserver = new StdIOLicenceObserver();
         ProgressObserver progressObserver = new ProgressObserver((progress) -> {
             logger.info("Installing package " + progress.getProgress() + "% - " + progress.getCurrentStep());
         });
@@ -142,7 +143,7 @@ public class SDKService {
      */
     private void installTools() throws SDKException, IOException, InterruptedException {
         Process process;
-        LicenceObserver licenceObserver = new LicenceObserver();
+        LicenceObserver licenceObserver = new StdIOLicenceObserver();
         ProgressObserver progressObserver = new ProgressObserver((progress) -> {
             logger.info("Installing tools " + progress.getProgress() + "% - " + progress.getCurrentStep());
         });
