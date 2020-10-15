@@ -83,23 +83,23 @@ public class PackagesListParser {
 
                 if(status == PackageStatus.INSTALLED) {
                     installedPackages.add(new InstalledPackage(
-                            IOUtils.removeSurroundingSpaces(columns[0]),
-                            IOUtils.removeSurroundingSpaces(columns[1]),
-                            IOUtils.removeSurroundingSpaces(columns[2]),
-                            IOUtils.removeSurroundingSpaces(columns[3])
+                            columns[0].trim(),
+                            columns[1].trim(),
+                            columns[2].trim(),
+                            columns[3].trim()
                     ));
                 } else if(status == PackageStatus.AVAILABLE) {
                     availableAvailablePackages.add(new AvailablePackage(
-                            IOUtils.removeSurroundingSpaces(columns[0]),
-                            IOUtils.removeSurroundingSpaces(columns[1]),
-                            IOUtils.removeSurroundingSpaces(columns[2])
+                            columns[0].trim(),
+                            columns[1].trim(),
+                            columns[2].trim()
                     ));
 
                 } else if(status == PackageStatus.UPDATABLE) {
                     availableUpdates.add(new AvailableUpdates(
-                            IOUtils.removeSurroundingSpaces(columns[0]),
-                            IOUtils.removeSurroundingSpaces(columns[1]),
-                            IOUtils.removeSurroundingSpaces(columns[2])
+                            columns[0].trim(),
+                            columns[1].trim(),
+                            columns[2].trim()
                     ));
                 }
             }
