@@ -36,27 +36,6 @@ public class IOUtils {
     }
 
     /**
-     * Remove all the spaces at the beginning and the end of a string
-     * @param str The string to remove the spaces to
-     * @return The string without surrounding spaces
-     */
-    public static String removeSurroundingSpaces(String str) {
-        if(str == null || str.length() == 0) {
-            return str;
-        }
-
-        while(str.length() > 0 && str.charAt(0) == ' ') {
-            str = str.substring(1);
-        }
-
-        while(str.length() > 0 && str.charAt(str.length() - 1) == ' ') {
-            str = str.substring(0, str.length() - 1);
-        }
-
-        return str;
-    }
-
-    /**
      * Get all files in a directory
      * @param dirPath The directory to returns the files
      * @param recursively True the files are found recursively, False if we want only the first level
