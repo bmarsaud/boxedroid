@@ -9,7 +9,8 @@ public enum APILevel {
     API_26(26, AndroidVersion.ANDROID_8),
     API_27(27, AndroidVersion.ANDROID_8_1),
     API_28(28, AndroidVersion.ANDROID_9),
-    API_29(29, AndroidVersion.ANDROID_10);
+    API_29(29, AndroidVersion.ANDROID_10),
+    API_30(30, AndroidVersion.ANDROID_11);
 
     private static final String NAME_PREFIX = "android-";
 
