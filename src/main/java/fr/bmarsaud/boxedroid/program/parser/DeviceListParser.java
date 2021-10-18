@@ -49,19 +49,19 @@ public class DeviceListParser {
             if(line.contains(ID_TAG)) {
                 line = line.replace(ID_TAG, "");
                 String[] idPair = line.split(CODE_TAG);
-                String id = IOUtils.removeSurroundingSpaces(idPair[0]);
+                String id = idPair[0].trim();
                 String code = idPair[1].replaceAll("\"", "");
 
                 currentDevice.setId(Integer.parseInt(id));
                 currentDevice.setCode(code);
             } else if(line.contains(NAME_TAG)) {
-                String name = IOUtils.removeSurroundingSpaces(line.split(NAME_TAG)[1]);
+                String name = line.split(NAME_TAG)[1].trim();
                 currentDevice.setName(name);
             } else if(line.contains(OEM_TAG)) {
-                String oem = IOUtils.removeSurroundingSpaces(line.split(OEM_TAG)[1]);
+                String oem = line.split(OEM_TAG)[1].trim();
                 currentDevice.setOem(oem);
             } else if(line.contains(TAG_TAG)) {
-                String tag = IOUtils.removeSurroundingSpaces(line.split(TAG_TAG)[1]);
+                String tag = line.split(TAG_TAG)[1].trim();
                 currentDevice.setTag(tag);
             }
         }
