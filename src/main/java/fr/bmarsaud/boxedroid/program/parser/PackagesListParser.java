@@ -63,7 +63,7 @@ public class PackagesListParser {
         process.waitFor(); // Wait for process to end before processing output
 
         availableUpdates.clear();
-        installedPackages.clear();
+        availablePackages.clear();
         availableUpdates.clear();
 
         PackageStatus status = null;
@@ -89,7 +89,7 @@ public class PackagesListParser {
                             columns[3].trim()
                     ));
                 } else if(status == PackageStatus.AVAILABLE) {
-                    availableAvailablePackages.add(new AvailablePackage(
+                    availablePackages.add(new AvailablePackage(
                             columns[0].trim(),
                             columns[1].trim(),
                             columns[2].trim()
