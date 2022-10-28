@@ -16,7 +16,6 @@ public class CLIToolsService {
 
     private final String sdkPath;
     private Document downloadPageDocument;
-    private String commandLineToolsPath;
 
     public CLIToolsService(String sdkPath) {
         this.sdkPath = sdkPath;
@@ -26,10 +25,10 @@ public class CLIToolsService {
      * Checks if cmdline-tools are available from the SDK path.
      * If not, download them from the Google website after asking the user to accept the agreements
      * terms.
+     * @return The path to the cmdline-tools binaries
      */
-    public void acquireCommandLineTools() throws IOException {
-        commandLineToolsPath = resolveCommandLineToolsPath(sdkPath);
-
+    public String acquireCommandLineTools() throws IOException {
+        String commandLineToolsPath = resolveCommandLineToolsPath(sdkPath);
         if(commandLineToolsPath == null) {
             System.out.println("Command Line Tools not found in " + sdkPath);
             System.out.println("Do you want to download it from Google website? (y/n)");
@@ -57,6 +56,7 @@ public class CLIToolsService {
                 commandLineToolsPath = resolveCommandLineToolsPath(sdkPath);
             }
         }
+        return commandLineToolsPath;
     }
 
     /**
@@ -129,9 +129,5 @@ public class CLIToolsService {
             platform = "win";
         }
         return "#sdk_" + platform + "_download";
-    }
-
-    public String getCommandLineToolsPath() {
-        return commandLineToolsPath;
     }
 }

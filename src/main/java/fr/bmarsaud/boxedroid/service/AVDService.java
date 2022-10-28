@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -24,7 +25,7 @@ import fr.bmarsaud.boxedroid.program.parser.DeviceListParser;
 import fr.bmarsaud.boxedroid.util.IOUtils;
 
 public class AVDService {
-    private static final String AVD_MANAGER_PATH = "tools/bin/avdmanager";
+    private static final String AVD_MANAGER_PATH = "avdmanager";
     private static final String EMULATOR_PATH = "emulator/emulator";
     private static final String AVD_DIR = "avd";
     private static final String SYS_IMAGE_PREFIX = "Sdk/";
@@ -38,8 +39,8 @@ public class AVDService {
     private List<AVD> avds;
     private String avdsPath;
 
-    public AVDService(String sdkPath, String boxedroidPath) {
-        this.avdManager = new AVDManager(new File(sdkPath, AVD_MANAGER_PATH).getAbsolutePath());
+    public AVDService(String sdkPath, String cmdlineToolsPath, String boxedroidPath) {
+        this.avdManager = new AVDManager(Paths.get(sdkPath, cmdlineToolsPath, AVD_MANAGER_PATH).toAbsolutePath().toString());
         this.emulator = new Emulator(new File(sdkPath, EMULATOR_PATH).getAbsolutePath(), sdkPath);
         this.avdsPath = new File(boxedroidPath, AVD_DIR).getAbsolutePath();
         this.avds = new ArrayList<>();
