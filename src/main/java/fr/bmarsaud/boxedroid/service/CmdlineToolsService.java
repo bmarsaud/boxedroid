@@ -12,6 +12,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class CmdlineToolsService {
     private static final String ANDROID_STUDIO_DOWNLOAD_PAGE = "https://developer.android.com/studio";
@@ -41,9 +43,9 @@ public class CmdlineToolsService {
                System.exit(1);
             }
 
-            String terms = getCmdlineToolsHTMLTerms();
+            String terms = getCmdlineToolTextTerms();
             if(terms != null) {
-                logger.info(terms.replaceAll("<br \\>", "\n"));
+                logger.info(terms);
                 logger.info("I have read and agree with the above terms and conditions (y/n)");
 
                 answer = IOUtils.readFromStandardInput();
@@ -76,8 +78,8 @@ public class CmdlineToolsService {
     }
 
     /**
-     * Extract HTML licence terms for the current platform from the android studio download page
-     * @return The cmdline-tools download URL
+     * Extract the HTML licence terms for the current platform from the android studio download page
+     * @return The cmdline-tools licence terms
      */
     private String getCmdlineToolsHTMLTerms() throws IOException {
         Document document = getDocument();
@@ -86,6 +88,38 @@ public class CmdlineToolsService {
             return element.html();
         }
         return null;
+    }
+
+    /**
+     * Extract the plain-text licence terms for the current platform from the android studio download page
+     * @return The cmdline-tools licence terms
+     */
+    private String getCmdlineToolTextTerms() throws IOException {
+        String terms = getCmdlineToolsHTMLTerms();
+        if(terms != null) {
+            terms = terms.replace("<br \\>", "\n")
+                    .replace("<em>", "")
+                    .replace("</em>", "");
+
+            // Add line breaks on titles
+            Matcher matcher = Pattern.compile("<h[23].*>(.*)</h[23]>").matcher(terms);
+            while(matcher.find()) {
+                terms = terms.replace(matcher.group(0), "\n" + matcher.group(1) + "\n");
+            }
+
+            // Add line breaks on numbered sections
+            matcher = Pattern.compile(" \\d+\\.\\d+ ").matcher(terms);
+            while(matcher.find()) {
+                terms = terms.replace(matcher.group(0), "\n" + matcher.group(0));
+            }
+
+            // Transform <a> links to plain text links
+            matcher = Pattern.compile("<a.*>(.*)</a>").matcher(terms);
+            while(matcher.find()) {
+                terms = terms.replace(matcher.group(0), matcher.group(1));
+            }
+        }
+        return terms;
     }
 
     /**
