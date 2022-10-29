@@ -4,6 +4,8 @@ import org.apache.commons.lang3.SystemUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -14,6 +16,7 @@ import java.util.List;
 public class CmdlineToolsService {
     private static final String ANDROID_STUDIO_DOWNLOAD_PAGE = "https://developer.android.com/studio";
 
+    private final Logger logger = LoggerFactory.getLogger(CmdlineToolsService.class);
     private final String sdkPath;
     private Document downloadPageDocument;
 
@@ -30,8 +33,8 @@ public class CmdlineToolsService {
     public String acquireCmdlineTools() throws IOException {
         String cmdlineToolsPath = resolveCmdlineToolsPath(sdkPath);
         if(cmdlineToolsPath == null) {
-            System.out.println("cmdline-tools not found in " + sdkPath);
-            System.out.println("Do you want to download it from Google website? (y/n)");
+            logger.info("cmdline-tools not found in " + sdkPath);
+            logger.info("Do you want to download it from Google website? (y/n)");
 
             String answer = IOUtils.readFromStandardInput();
             if (!"y".equalsIgnoreCase(answer)) {
@@ -40,8 +43,8 @@ public class CmdlineToolsService {
 
             String terms = getCmdlineToolsHTMLTerms();
             if(terms != null) {
-                System.out.println(terms.replaceAll("<br \\>", "\n"));
-                System.out.println("I have read and agree with the above terms and conditions (y/n)");
+                logger.info(terms.replaceAll("<br \\>", "\n"));
+                logger.info("I have read and agree with the above terms and conditions (y/n)");
 
                 answer = IOUtils.readFromStandardInput();
                 if (!"y".equalsIgnoreCase(answer)) {
