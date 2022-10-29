@@ -20,9 +20,8 @@ public class IOUtils {
      * @param destination The destination to download the file to.
      */
     public static void downloadFile(String sourceUrl, Path destination) throws IOException {
-        URL url = new URL(sourceUrl);
-        ReadableByteChannel readableByteChannel = Channels.newChannel(url.openStream());
-        try(FileOutputStream fileOutputStream = new FileOutputStream(destination.toFile())) {
+        try(ReadableByteChannel readableByteChannel = Channels.newChannel(new URL(sourceUrl).openStream());
+            FileOutputStream fileOutputStream = new FileOutputStream(destination.toFile())) {
             fileOutputStream.getChannel().transferFrom(readableByteChannel, 0, Long.MAX_VALUE);
         }
     }
