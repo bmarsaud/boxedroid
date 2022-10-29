@@ -25,7 +25,7 @@ import fr.bmarsaud.boxedroid.entity.Variant;
 import fr.bmarsaud.boxedroid.entity.exception.DeviceNotAvailableException;
 import fr.bmarsaud.boxedroid.entity.exception.SDKException;
 import fr.bmarsaud.boxedroid.service.AVDService;
-import fr.bmarsaud.boxedroid.service.CLIToolsService;
+import fr.bmarsaud.boxedroid.service.CmdlineToolsService;
 import fr.bmarsaud.boxedroid.service.SDKService;
 
 public class Boxedroid {
@@ -85,10 +85,10 @@ public class Boxedroid {
     /**
      * Find where cmdline-tools are installed. Install them if not found.
      */
-    public void acquireCommandLineTools() {
-        CLIToolsService cliToolsService = new CLIToolsService(sdkPath);
+    public void acquireCmdlineTools() {
+        CmdlineToolsService cmdlineToolsService = new CmdlineToolsService(sdkPath);
         try {
-            cmdlineToolsPath = cliToolsService.acquireCommandLineTools();
+            cmdlineToolsPath = cmdlineToolsService.acquireCmdlineTools();
         } catch (IOException e) {
             logger.error(e.getMessage());
             System.exit(1);
@@ -194,7 +194,7 @@ public class Boxedroid {
         }
 
         Boxedroid boxedroid = new Boxedroid(sdkPath);
-        boxedroid.acquireCommandLineTools();
+        boxedroid.acquireCmdlineTools();
         boxedroid.launchEmulator(androidVersion, abi, variant, device);
     }
 }

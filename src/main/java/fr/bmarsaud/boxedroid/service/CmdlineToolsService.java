@@ -11,13 +11,13 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 
-public class CLIToolsService {
+public class CmdlineToolsService {
     private static final String ANDROID_STUDIO_DOWNLOAD_PAGE = "https://developer.android.com/studio";
 
     private final String sdkPath;
     private Document downloadPageDocument;
 
-    public CLIToolsService(String sdkPath) {
+    public CmdlineToolsService(String sdkPath) {
         this.sdkPath = sdkPath;
     }
 
@@ -27,10 +27,10 @@ public class CLIToolsService {
      * terms.
      * @return The path to the cmdline-tools binaries
      */
-    public String acquireCommandLineTools() throws IOException {
-        String commandLineToolsPath = resolveCommandLineToolsPath(sdkPath);
-        if(commandLineToolsPath == null) {
-            System.out.println("Command Line Tools not found in " + sdkPath);
+    public String acquireCmdlineTools() throws IOException {
+        String cmdlineToolsPath = resolveCmdlineToolsPath(sdkPath);
+        if(cmdlineToolsPath == null) {
+            System.out.println("cmdline-tools not found in " + sdkPath);
             System.out.println("Do you want to download it from Google website? (y/n)");
 
             String answer = IOUtils.readFromStandardInput();
@@ -38,7 +38,7 @@ public class CLIToolsService {
                System.exit(1);
             }
 
-            String terms = getCommandLineToolsHTMLTerms();
+            String terms = getCmdlineToolsHTMLTerms();
             if(terms != null) {
                 System.out.println(terms.replaceAll("<br \\>", "\n"));
                 System.out.println("I have read and agree with the above terms and conditions (y/n)");
@@ -48,22 +48,22 @@ public class CLIToolsService {
                     System.exit(1);
                 }
 
-                String downloadUrl = getCommandLineToolsDownloadURL();
+                String downloadUrl = getCmdlineToolsDownloadURL();
                 Path downloadedFile = Paths.get(System.getProperty("java.io.tmpdir"), "cmdline-tools.zip");
                 IOUtils.downloadFile(downloadUrl, downloadedFile);
                 IOUtils.unzipFile(downloadedFile.toFile(), Paths.get(sdkPath));
 
-                commandLineToolsPath = resolveCommandLineToolsPath(sdkPath);
+                cmdlineToolsPath = resolveCmdlineToolsPath(sdkPath);
             }
         }
-        return commandLineToolsPath;
+        return cmdlineToolsPath;
     }
 
     /**
-     * Extract command line tools download URL for the current platform from the android studio download page
-     * @return The command line tools download URL
+     * Extract cmdline-tools download URL for the current platform from the android studio download page
+     * @return The cmdline-tools download URL
      */
-    private String getCommandLineToolsDownloadURL() throws IOException {
+    private String getCmdlineToolsDownloadURL() throws IOException {
         Document document = getDocument();
         Element element = document.select(getDownloadModalSelector() + " a[data-action=download]").first();
         if(element != null) {
@@ -74,9 +74,9 @@ public class CLIToolsService {
 
     /**
      * Extract HTML licence terms for the current platform from the android studio download page
-     * @return The command line tools download URL
+     * @return The cmdline-tools download URL
      */
-    private String getCommandLineToolsHTMLTerms() throws IOException {
+    private String getCmdlineToolsHTMLTerms() throws IOException {
         Document document = getDocument();
         Element element = document.select(getDownloadModalSelector() + " .sdk-terms").first();
         if(element != null) {
@@ -91,7 +91,7 @@ public class CLIToolsService {
      * @param sdkPath The path to the Android SDK
      * @return The path to cmdline-tools binaries
      */
-    private String resolveCommandLineToolsPath(String sdkPath) {
+    private String resolveCmdlineToolsPath(String sdkPath) {
         List<String> pathsToCheck = Arrays.asList(
                 "cmdline-tools/bin",
                 "cmdline-tools/latest/bin"
@@ -116,7 +116,7 @@ public class CLIToolsService {
     }
 
     /**
-     * Get command line tools download modal selector from the current platform
+     * Get cmdline-tools download modal selector from the current platform
      * @return The download modal selector
      */
     private String getDownloadModalSelector() {
