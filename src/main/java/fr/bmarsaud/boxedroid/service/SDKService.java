@@ -3,8 +3,8 @@ package fr.bmarsaud.boxedroid.service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,12 +28,12 @@ public class SDKService {
     private List<InstalledPackage> installedPackages;
     private List<AvailableUpdates> availableUpdates;
 
-    private static final String SDK_MANAGER_PATH = "tools/bin/sdkmanager";
+    private static final String SDK_MANAGER_PATH = "sdkmanager";
 
     private SDKManager sdkManager;
 
-    public SDKService(String sdkPath) {
-        this.sdkManager = new SDKManager(new File(sdkPath, SDK_MANAGER_PATH).getAbsolutePath(), sdkPath);
+    public SDKService(String sdkPath, String cmdlineToolsPath) {
+        this.sdkManager = new SDKManager(Paths.get(sdkPath, cmdlineToolsPath, SDK_MANAGER_PATH).toAbsolutePath().toString(), sdkPath);
         this.availablePackages = new ArrayList<>();
         this.installedPackages = new ArrayList<>();
         this.availableUpdates = new ArrayList<>();

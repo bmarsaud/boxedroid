@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Arrays;
@@ -24,6 +25,7 @@ import fr.bmarsaud.boxedroid.entity.Variant;
 import fr.bmarsaud.boxedroid.entity.exception.DeviceNotAvailableException;
 import fr.bmarsaud.boxedroid.entity.exception.SDKException;
 import fr.bmarsaud.boxedroid.service.AVDService;
+import fr.bmarsaud.boxedroid.service.CmdlineToolsService;
 import fr.bmarsaud.boxedroid.service.SDKService;
 
 public class Boxedroid {
@@ -33,6 +35,7 @@ public class Boxedroid {
 
     private Logger logger = LoggerFactory.getLogger(Boxedroid.class);
     private String sdkPath;
+    private String cmdlineToolsPath;
 
     public Boxedroid(String sdkPath) {
         this.sdkPath = sdkPath;
@@ -60,8 +63,8 @@ public class Boxedroid {
             System.exit(1);
         };
 
-        SDKService sdkService = new SDKService(sdkPath);
-        AVDService avdService = new AVDService(sdkPath, currentDir);
+        SDKService sdkService = new SDKService(sdkPath, cmdlineToolsPath);
+        AVDService avdService = new AVDService(sdkPath, cmdlineToolsPath, currentDir);
 
         try {
             sdkService.install(version.getApiLevel(), abi, variant);
@@ -75,6 +78,19 @@ public class Boxedroid {
                     avdService.getAvailableDevices().stream().map(Device::getCode).collect(Collectors.joining(", "))
                 );
             }
+            System.exit(1);
+        }
+    }
+
+    /**
+     * Find where cmdline-tools are installed. Install them if not found.
+     */
+    public void acquireCmdlineTools() {
+        CmdlineToolsService cmdlineToolsService = new CmdlineToolsService(sdkPath);
+        try {
+            cmdlineToolsPath = cmdlineToolsService.acquireCmdlineTools();
+        } catch (IOException e) {
+            logger.error(e.getMessage());
             System.exit(1);
         }
     }
@@ -178,6 +194,7 @@ public class Boxedroid {
         }
 
         Boxedroid boxedroid = new Boxedroid(sdkPath);
+        boxedroid.acquireCmdlineTools();
         boxedroid.launchEmulator(androidVersion, abi, variant, device);
     }
 }
