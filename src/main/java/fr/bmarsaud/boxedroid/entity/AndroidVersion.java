@@ -11,7 +11,9 @@ public enum AndroidVersion {
     ANDROID_9(APILevel.API_28, "9", "9.0"),
     ANDROID_10(APILevel.API_29, "10", "10.0"),
     ANDROID_11(APILevel.API_30, "11", "11.0"),
-    ANDROID_12(APILevel.API_31, "12", "12.0");
+    ANDROID_12(APILevel.API_31, "12", "12.0"),
+    ANDROID_12L(APILevel.API_32, "12.1", "12L"),
+    ANDROID_13(APILevel.API_33, "13", "13.0");
 
     private APILevel apiLevel;
     private String[] codes;
