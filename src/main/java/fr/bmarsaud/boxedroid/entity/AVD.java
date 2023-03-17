@@ -2,6 +2,7 @@ package fr.bmarsaud.boxedroid.entity;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import fr.bmarsaud.boxedroid.service.INIService;
@@ -23,6 +24,7 @@ public class AVD {
     public AVD(String name, String path) {
         this.name = name;
         this.path = path;
+        iniConfig = new LinkedHashMap<>();
     }
 
     /**

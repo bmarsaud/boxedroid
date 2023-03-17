@@ -1,7 +1,5 @@
 package fr.bmarsaud.boxedroid.entity;
 
-import java.util.Arrays;
-
 public enum ABI {
     X86("x86"),
     X86_64("x86_64"),

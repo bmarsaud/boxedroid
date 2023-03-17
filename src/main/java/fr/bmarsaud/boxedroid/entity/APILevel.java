@@ -37,7 +37,13 @@ public enum APILevel {
      * @return The API level if found, null instead
      */
     public static APILevel fromName(String name) {
-        int code = Integer.parseInt(name.replace(NAME_PREFIX, ""));
+        int code;
+        try {
+            code = Integer.parseInt(name.replace(NAME_PREFIX, ""));
+        } catch(NumberFormatException e) {
+            return null;
+        }
+
         for(APILevel level : APILevel.values()) {
             if(level.code == code) {
                 return level;

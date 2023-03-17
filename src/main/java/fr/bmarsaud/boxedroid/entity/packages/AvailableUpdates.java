@@ -1,5 +1,7 @@
 package fr.bmarsaud.boxedroid.entity.packages;
 
+import java.util.Objects;
+
 public class AvailableUpdates {
     private String id;
     private String installed;
@@ -33,5 +35,20 @@ public class AvailableUpdates {
 
     public void setAvailable(String available) {
         this.available = available;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        AvailableUpdates that = (AvailableUpdates) o;
+        return Objects.equals(id, that.id) &&
+                Objects.equals(installed, that.installed) &&
+                Objects.equals(available, that.available);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, installed, available);
     }
 }

@@ -1,23 +1,14 @@
-package fr.bmarsaud.boxedroid.program.observer;
+package fr.bmarsaud.boxedroid.program.observer.licence;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
 import java.util.Observable;
 import java.util.Observer;
-import java.util.Scanner;
 
-import fr.bmarsaud.boxedroid.entity.exception.LicenceDeclinedException;
 import fr.bmarsaud.boxedroid.program.Program;
 
 /**
- * An observer displaying the licences to the standard output and asking the user to
- * accept it
+ * An observer looking do licence display
  */
-public class LicenceObserver implements Observer {
-    private Logger logger = LoggerFactory.getLogger(LicenceObserver.class);
-
+public abstract class LicenceObserver implements Observer {
     public static final String LICENSE_START = "Terms and Conditions";
     public static final String LICENSE_DELIMITER = "---------------------------------------";
     public static final int LICENSE_ACCEPT_INDEX = 2; // The end of the licence is defined by this index
@@ -42,26 +33,16 @@ public class LicenceObserver implements Observer {
         }
 
         if(licencing) {
-            logger.info("Licence - " + line);
+            onLicenseDisplay(line);
         }
 
         if(currentIndex == LICENSE_ACCEPT_INDEX) {
-            logger.info("Do you accept the licence ? (y/N)");
-            Scanner input = new Scanner(System.in);
-            String response = input.nextLine();
-
-            try {
-                program.sendInput(response);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            if(!response.equalsIgnoreCase("y")) {
-                program.setException(new LicenceDeclinedException());
-            }
-
+            onLicenceAcceptanceRequest(program);
             currentIndex = 0;
             licencing = false;
         }
     }
+
+    public abstract void onLicenseDisplay(String licenceLine);
+    public abstract void onLicenceAcceptanceRequest(Program program);
 }
